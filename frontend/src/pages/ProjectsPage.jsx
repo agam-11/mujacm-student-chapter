@@ -125,7 +125,7 @@ export default function ProjectsPage() {
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-b from-[#0b1d3a] to-[#00a7e1] font-sans overflow-hidden text-white">
       {/* Background shapes for decoration */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10">
+      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-40 right-20 w-72 h-72 bg-cyan-400 rounded-full blur-3xl"></div>
         <div className="absolute bottom-40 left-20 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
       </div>

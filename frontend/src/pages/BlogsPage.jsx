@@ -252,9 +252,9 @@ export default function BlogsPage() {
 
   // Determine which blogs to use and filter them
   const blogsToDisplay = mediumBlogs.length > 0 ? mediumBlogs : blogs;
-  const filteredBlogs = filter === "all" 
-    ? blogsToDisplay 
-    : blogsToDisplay.filter(blog => blog.category === filter);
+  const filteredBlogs = filter === "all"
+    ? blogsToDisplay
+    : blogsToDisplay.filter(blog => (blog.category || "").toLowerCase() === filter);
 
   const categories = mediumBlogs.length > 0 ? availableCategories : [
     "all",
@@ -268,7 +268,7 @@ export default function BlogsPage() {
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-b from-[#0b1d3a] to-[#00a7e1] font-sans overflow-hidden text-white">
       {/* Background shapes for decoration */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10">
+  <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-60 left-10 w-80 h-80 bg-purple-400 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-pink-400 rounded-full blur-3xl"></div>
       </div>
@@ -313,9 +313,9 @@ export default function BlogsPage() {
               {categories.map((category) => (
                 <button
                   key={category}
-                  onClick={() => setFilter(category)}
+                  onClick={() => setFilter((category || "").toLowerCase())}
                   className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
-                    filter === category
+                    filter === (category || "").toLowerCase()
                       ? "bg-purple-500 text-white shadow-lg scale-105"
                       : "bg-white/20 text-white hover:bg-white/30"
                   }`}
