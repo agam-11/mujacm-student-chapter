@@ -1,5 +1,3 @@
-import { NavLink } from "../components/NavLink";
-
 // Stat Card Component for the "About Us" section
 const StatCard = ({ value, label }) => (
   <div className="bg-cyan-500 bg-opacity-80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg transform hover:-translate-y-2 transition-transform duration-300">
@@ -17,25 +15,7 @@ export default function AboutUsPage() {
         {/* You could add SVG patterns or other decorative elements here */}
       </div>
 
-      {/* Header Navigation */}
-      <header className="absolute top-0 left-0 right-0 z-10 p-6 md:p-8">
-        <div className="container mx-auto">
-          <nav className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="w-10 h-10 bg-white rounded-full"></div>
-            <ul className="flex flex-wrap items-center justify-center gap-x-6 md:gap-x-8 gap-y-2">
-              <NavLink href="#">Team</NavLink>
-              <NavLink href="#">Events</NavLink>
-              <NavLink href="#">Gallery</NavLink>
-              <NavLink href="#">Blogs</NavLink>
-              <NavLink href="#">Projects</NavLink>
-              <NavLink href="#">Contact Us</NavLink>
-            </ul>
-          </nav>
-        </div>
-      </header>
-
-      <section className="mt-20 py-20 px-4">
+      <section className="py-20 px-4">
         <div className="container mx-auto max-w-5xl text-left">
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">About Us</h2>
           <p className="text-lg text-gray-200 mb-12">

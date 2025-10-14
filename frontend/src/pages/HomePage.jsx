@@ -1,5 +1,3 @@
-import { NavLink } from "../components/NavLink";
-
 // Main App Component
 export default function HomePage() {
   return (
@@ -8,24 +6,6 @@ export default function HomePage() {
       <div className="absolute top-0 left-0 w-full h-full opacity-10">
         {/* You could add SVG patterns or other decorative elements here */}
       </div>
-
-      {/* Header Navigation */}
-      <header className="absolute top-0 left-0 right-0 z-10 p-6 md:p-8">
-        <div className="container mx-auto">
-          <nav>
-            <ul className="flex flex-wrap items-center justify-center gap-x-6 md:gap-x-12 gap-y-2">
-              <NavLink href="#">Home</NavLink>
-              <NavLink href="about">About Us</NavLink>
-              <NavLink href="#">Team</NavLink>
-              <NavLink href="#">Events</NavLink>
-              <NavLink href="#">Gallery</NavLink>
-              <NavLink href="#">Blogs</NavLink>
-              <NavLink href="#">Projects</NavLink>
-              <NavLink href="#">Contact Us</NavLink>
-            </ul>
-          </nav>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <main className="relative flex flex-col items-center justify-center min-h-screen text-center text-white px-4">
