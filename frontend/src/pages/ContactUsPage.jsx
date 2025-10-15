@@ -40,7 +40,7 @@ export default function ContactUsPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-b from-[#0b1d3a] to-[#00a7e1] font-sans overflow-hidden text-white">
+  <div className="relative min-h-screen w-full font-sans overflow-hidden text-white">
       {/* Background shapes for decoration */}
   <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-20 left-10 w-64 h-64 bg-cyan-400 rounded-full blur-3xl"></div>

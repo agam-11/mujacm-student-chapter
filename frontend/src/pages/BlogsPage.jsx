@@ -266,7 +266,7 @@ export default function BlogsPage() {
   ];
 
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-b from-[#0b1d3a] to-[#00a7e1] font-sans overflow-hidden text-white">
+  <div className="relative min-h-screen w-full font-sans overflow-hidden text-white">
       {/* Background shapes for decoration */}
   <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-60 left-10 w-80 h-80 bg-purple-400 rounded-full blur-3xl"></div>
