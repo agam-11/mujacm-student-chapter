@@ -34,6 +34,8 @@ export default function ThreeGlobe() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x110053, 1); // Dark purple background
     containerRef.current.appendChild(renderer.domElement);
+  renderer.domElement.style.pointerEvents = 'auto';
+  renderer.domElement.style.zIndex = '1'; // Set a reasonable zIndex
     rendererRef.current = renderer;
 
     // Create wireframe globe
@@ -76,12 +78,20 @@ export default function ThreeGlobe() {
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
 
-    // Mouse interaction
+    // Mouse interaction (smoothed)
     let mouseX = 0;
     let mouseY = 0;
+    let targetRotX = 0;
+    let targetRotY = 0;
+    const lerp = (a, b, t) => a + (b - a) * t;
     const handleMouseMove = (event) => {
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+      const nx = (event.clientX / window.innerWidth) * 2 - 1;
+      const ny = -(event.clientY / window.innerHeight) * 2 + 1;
+      mouseX = nx;
+      mouseY = ny;
+      // Map mouse to target rotations
+      targetRotY = mouseX * 0.8; // yaw
+      targetRotX = mouseY * 0.6; // pitch
     };
     window.addEventListener('mousemove', handleMouseMove);
 
@@ -97,18 +107,26 @@ export default function ThreeGlobe() {
     const animate = () => {
       frameIdRef.current = requestAnimationFrame(animate);
 
-      // Rotate globe
+      // Smoothly interpolate globe rotation towards targetRot
       if (globeRef.current) {
-        globeRef.current.rotation.y += 0.002;
-        globeRef.current.rotation.x += 0.001;
-
-        // Mouse interaction - subtle tilt
-        globeRef.current.rotation.y += mouseX * 0.001;
-        globeRef.current.rotation.x += mouseY * 0.001;
+        globeRef.current.rotation.y = lerp(globeRef.current.rotation.y, targetRotY + globeRef.current.rotation.y + 0.002, 0.05);
+        globeRef.current.rotation.x = lerp(globeRef.current.rotation.x, targetRotX + globeRef.current.rotation.x + 0.001, 0.05);
       }
 
-      // Rotate stars slowly
-      stars.rotation.y += 0.0005;
+      // Update stars positions with their velocities
+      const posAttr = starGeometry.getAttribute('position');
+      for (let i = 0; i < starCount * 3; i += 3) {
+        positions[i] += velocities[i];
+        positions[i + 1] += velocities[i + 1];
+        positions[i + 2] += velocities[i + 2];
+
+        // Wrap stars when they move too far away
+        for (let j = 0; j < 3; j++) {
+          if (positions[i + j] > 20) positions[i + j] = -20;
+          if (positions[i + j] < -20) positions[i + j] = 20;
+        }
+      }
+      posAttr.needsUpdate = true;
 
       renderer.render(scene, camera);
     };
