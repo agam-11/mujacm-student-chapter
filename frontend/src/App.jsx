@@ -44,9 +44,6 @@ const AppContent = () => {
         backgroundColor: theme.colors.bg,
         color: theme.colors.text,
         position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
       }}
     >
       {/* Three.js wireframe globe background - absolutely positioned behind everything */}
@@ -70,8 +67,6 @@ const AppContent = () => {
           position: "relative",
           zIndex: 1,
           width: "100%",
-          flex: 1,
-          overflow: "auto",
         }}
       >
         {/* Floating Navigation */}
@@ -102,12 +97,9 @@ const AppContent = () => {
                           offset={-90}
                           duration={500}
                           className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-pointer transition-colors duration-300 px-3 md:px-4 py-2 rounded-full"
+                          activeClass="nav-link-active"
                           style={{
                             color: theme.colors.text,
-                          }}
-                          activeStyle={{
-                            backgroundColor: `${theme.colors.accent}30`,
-                            color: theme.colors.accent,
                           }}
                         >
                           {label}

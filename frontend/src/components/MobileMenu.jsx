@@ -101,13 +101,10 @@ export default function MobileMenu({ sections }) {
                     duration={500}
                     onClick={closeMenu}
                     className="block font-bold uppercase tracking-wider text-sm py-3 px-4 rounded-lg cursor-pointer transition-all duration-300"
+                    activeClass="nav-link-active"
                     style={{
                       color: theme.colors.text,
                       backgroundColor: 'transparent',
-                    }}
-                    activeStyle={{
-                      backgroundColor: `${theme.colors.accent}30`,
-                      color: theme.colors.accent,
                     }}
                   >
                     {label}
