@@ -47,7 +47,7 @@ export default function ThreeGlobe({ isDark = true }) {
     const globeScale = isMobile ? 0.6 : isTablet ? 0.8 : 1.0;
     const cameraDistance = isMobile ? 3 : isTablet ? 2.5 : 2;
     const starCount = isMobile ? 500 : isTablet ? 1000 : 1500;
-    const rayCount = isMobile ? 6 : isTablet ? 9 : 12;
+    const rayCount = isMobile ? 75 : isTablet ? 75 : 75;
     const rocketCount = isMobile ? 1 : isTablet ? 2 : 3;
 
     // Scene setup
