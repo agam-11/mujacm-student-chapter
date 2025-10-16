@@ -1,14 +1,26 @@
 import { Link, Element } from "react-scroll";
+import { useContext, useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
 import AboutUsPage from "./pages/AboutUsPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import BlogsPage from "./pages/BlogsPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import Section from "./components/Section";
+import ThemeSwitcher from "./components/ThemeSwitcher";
+import { ThemeContext } from "./context/ThemeContext";
 import logo from "/acm.png";
+// Light-theme blue logo (placed in public folder as /acmblue.png)
+import blueLogo from "/acmblue.png";
 import ThreeGlobe from "./components/ThreeGlobe";
 
-const App = () => {
+const AppContent = () => {
+  const theme = useContext(ThemeContext);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const sections = [
     { id: "home", label: "Home", component: <HomePage /> },
     { id: "about", label: "About Us", component: <AboutUsPage /> },
@@ -20,19 +32,46 @@ const App = () => {
     { id: "contact", label: "Contact Us", component: <ContactUsPage /> },
   ];
 
-  return (
-    <div className="relative font-sans min-h-screen">
-      
-      {/* Three.js wireframe globe background */}
-      <ThreeGlobe />
+  if (!isMounted) return null;
 
-      {/* Floating Navigation (No changes needed here) */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-4">
+  return (
+    <div
+      className="font-sans min-h-screen transition-colors duration-300"
+      style={{
+        backgroundColor: theme.colors.bg,
+        color: theme.colors.text,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      
+      {/* Three.js wireframe globe background - absolutely positioned behind everything */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      >
+        <ThreeGlobe isDark={theme.isDark} />
+      </div>
+
+      {/* Content wrapper with relative positioning to appear above background */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        {/* Floating Navigation */}
+        <header className="fixed top-0 left-0 right-0 z-50 py-4">
         <div className="container mx-auto flex items-center justify-between px-4">
           <div className="flex-shrink-0 flex items-center">
-            <img src={logo} alt="ACM logo" className="w-20 h-20 object-contain" />
+            <img src={theme.isDark ? logo : blueLogo} alt="ACM logo" className="w-20 h-20 object-contain" />
           </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-full shadow-lg">
+          <div
+            className="rounded-full shadow-lg backdrop-blur-md"
+            style={{ backgroundColor: theme.colors.navBg }}
+          >
             <nav>
               <ul className="flex items-center justify-center gap-x-3 md:gap-x-6 px-4 py-3">
                 {sections.map(({ id, label, component }) => (
@@ -44,13 +83,22 @@ const App = () => {
                         smooth={true}
                         offset={-90}
                         duration={500}
-                        className="text-white font-bold uppercase tracking-wider text-base md:text-lg cursor-pointer hover:text-cyan-300 transition-colors duration-300 px-4 py-2 rounded-full"
-                        activeClass="bg-cyan-500/30 !text-cyan-200"
+                        className="font-bold uppercase tracking-wider text-base md:text-lg cursor-pointer transition-colors duration-300 px-4 py-2 rounded-full"
+                        style={{
+                          color: theme.colors.text,
+                        }}
+                        activeStyle={{
+                          backgroundColor: `${theme.colors.accent}30`,
+                          color: theme.colors.accent,
+                        }}
                       >
                         {label}
                       </Link>
                     ) : (
-                      <span className="text-gray-500 font-bold uppercase tracking-wider text-base md:text-lg cursor-not-allowed px-6 py-2 rounded-full">
+                      <span
+                        className="font-bold uppercase tracking-wider text-base md:text-lg cursor-not-allowed px-6 py-2 rounded-full"
+                        style={{ color: theme.colors.textSecondary }}
+                      >
                         {label}
                       </span>
                     )}
@@ -59,11 +107,11 @@ const App = () => {
               </ul>
             </nav>
           </div>
-          <div className="flex-shrink-0 w-12 h-12"></div>
+          <ThemeSwitcher />
         </div>
       </header>
 
-      {/* Page Sections (No changes needed here) */}
+      {/* Page Sections */}
       <main>
         {sections.map(
           ({ id, component }) =>
@@ -74,7 +122,14 @@ const App = () => {
             )
         )}
       </main>
+      </div>
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <AppContent />
   );
 };
 

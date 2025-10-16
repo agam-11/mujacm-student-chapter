@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+:root {
+	--font-sans: 'Sreda', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+html, body, #root {
+	height: 100%;
+}
+
+body {
+	font-family: var(--font-sans);
+}
+
+/* Light theme overrides: force black text for most elements to ensure readability */
+.light-theme {
+	color: #000000 !important;
+}
+
+.light-theme h1,
+.light-theme h2,
+.light-theme h3,
+.light-theme h4,
+.light-theme h5,
+.light-theme h6,
+.light-theme p,
+.light-theme a,
+.light-theme span,
+.light-theme label,
+.light-theme li,
+.light-theme button {
+	color: #000000 !important;
+}
+
+/* Ensure backgrounds don't force dark text to be unreadable */
+.light-theme .bg-dark {
+	background-color: transparent !important;
+}
