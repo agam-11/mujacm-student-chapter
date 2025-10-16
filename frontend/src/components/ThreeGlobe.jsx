@@ -40,6 +40,16 @@ export default function ThreeGlobe({ isDark = true }) {
 
     const colors = getColors(isDark);
 
+    // Responsive scaling based on viewport
+    const isMobile = window.innerWidth < 768;
+    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+    
+    const globeScale = isMobile ? 0.6 : isTablet ? 0.8 : 1.0;
+    const cameraDistance = isMobile ? 3 : isTablet ? 2.5 : 2;
+    const starCount = isMobile ? 500 : isTablet ? 1000 : 1500;
+    const rayCount = isMobile ? 6 : isTablet ? 9 : 12;
+    const rocketCount = isMobile ? 1 : isTablet ? 2 : 3;
+
     // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
@@ -51,7 +61,7 @@ export default function ThreeGlobe({ isDark = true }) {
       0.1,
       1000
     );
-    camera.position.z = 2;
+    camera.position.z = cameraDistance;
     cameraRef.current = camera;
 
     // Renderer setup
@@ -80,13 +90,13 @@ export default function ThreeGlobe({ isDark = true }) {
 
     console.log("ThreeGlobe: Renderer created and added to DOM");
 
-    // Create wireframe globe
-    const geometry = new THREE.SphereGeometry(1.15, 32, 32);
+    // Create globe (wireframe sphere)
+    const geometry = new THREE.SphereGeometry(1.15 * globeScale, 32, 32);
     const material = new THREE.MeshBasicMaterial({
       color: colors.globe,
       wireframe: true,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.3,
     });
     const globe = new THREE.Mesh(geometry, material);
     scene.add(globe);
@@ -94,7 +104,6 @@ export default function ThreeGlobe({ isDark = true }) {
 
     // Add stars/particles
     const starGeometry = new THREE.BufferGeometry();
-    const starCount = 1500;
     const positions = new Float32Array(starCount * 3);
     const velocities = new Float32Array(starCount * 3);
 
@@ -121,7 +130,6 @@ export default function ThreeGlobe({ isDark = true }) {
 
     // Create rays emanating from globe
     const rays = [];
-    const rayCount = 75;
     const rayGroup = new THREE.Group();
     scene.add(rayGroup);
 
@@ -129,14 +137,15 @@ export default function ThreeGlobe({ isDark = true }) {
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
       
-      const rayLength = 0.175;
-      const startX = Math.sin(theta) * Math.cos(phi) * 1.15;
-      const startY = Math.sin(theta) * Math.sin(phi) * 1.15;
-      const startZ = Math.cos(theta) * 1.15;
+      const rayLength = 0.175 * globeScale;
+      const globeRadius = 1.15 * globeScale;
+      const startX = Math.sin(theta) * Math.cos(phi) * globeRadius;
+      const startY = Math.sin(theta) * Math.sin(phi) * globeRadius;
+      const startZ = Math.cos(theta) * globeRadius;
       
-      const endX = Math.sin(theta) * Math.cos(phi) * (1.15 + rayLength);
-      const endY = Math.sin(theta) * Math.sin(phi) * (1.15 + rayLength);
-      const endZ = Math.cos(theta) * (1.15 + rayLength);
+      const endX = Math.sin(theta) * Math.cos(phi) * (globeRadius + rayLength);
+      const endY = Math.sin(theta) * Math.sin(phi) * (globeRadius + rayLength);
+      const endZ = Math.cos(theta) * (globeRadius + rayLength);
 
       const rayGeometry = new THREE.BufferGeometry();
       const rayPositions = new Float32Array([
@@ -165,7 +174,6 @@ export default function ThreeGlobe({ isDark = true }) {
 
     // Create random rockets/UFOs
     const rockets = [];
-    const rocketCount = 3;
 
     const createRocket = () => {
       const startX = (Math.random() - 0.5) * 20;

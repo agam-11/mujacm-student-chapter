@@ -7,6 +7,7 @@ import BlogsPage from "./pages/BlogsPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import Section from "./components/Section";
 import ThemeSwitcher from "./components/ThemeSwitcher";
+import MobileMenu from "./components/MobileMenu";
 import { ThemeContext } from "./context/ThemeContext";
 import logo from "/acm.png";
 // Light-theme blue logo (placed in public folder as /acmblue.png)
@@ -66,10 +67,12 @@ const AppContent = () => {
         <header className="fixed top-0 left-0 right-0 z-50 py-4">
         <div className="container mx-auto flex items-center justify-between px-4">
           <div className="flex-shrink-0 flex items-center">
-            <img src={theme.isDark ? logo : blueLogo} alt="ACM logo" className="w-20 h-20 object-contain" />
+            <img src={theme.isDark ? logo : blueLogo} alt="ACM logo" className="w-16 h-16 md:w-20 md:h-20 object-contain" />
           </div>
+          
+          {/* Desktop Navigation - hidden on mobile */}
           <div
-            className="rounded-full shadow-lg backdrop-blur-md"
+            className="hidden md:block rounded-full shadow-lg backdrop-blur-md"
             style={{ backgroundColor: theme.colors.navBg }}
           >
             <nav>
@@ -83,7 +86,7 @@ const AppContent = () => {
                         smooth={true}
                         offset={-90}
                         duration={500}
-                        className="font-bold uppercase tracking-wider text-base md:text-lg cursor-pointer transition-colors duration-300 px-4 py-2 rounded-full"
+                        className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-pointer transition-colors duration-300 px-3 md:px-4 py-2 rounded-full"
                         style={{
                           color: theme.colors.text,
                         }}
@@ -96,7 +99,7 @@ const AppContent = () => {
                       </Link>
                     ) : (
                       <span
-                        className="font-bold uppercase tracking-wider text-base md:text-lg cursor-not-allowed px-6 py-2 rounded-full"
+                        className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-not-allowed px-4 md:px-6 py-2 rounded-full"
                         style={{ color: theme.colors.textSecondary }}
                       >
                         {label}
@@ -107,7 +110,12 @@ const AppContent = () => {
               </ul>
             </nav>
           </div>
-          <ThemeSwitcher />
+
+          {/* Mobile & Desktop Controls */}
+          <div className="flex items-center gap-3">
+            <ThemeSwitcher />
+            <MobileMenu sections={sections} />
+          </div>
         </div>
       </header>
 
