@@ -1,4 +1,4 @@
-import { Link, Element } from "react-scroll";
+import { Link, Element, scroller } from "react-scroll";
 import { useContext, useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
 import AboutUsPage from "./pages/AboutUsPage";
@@ -22,6 +22,14 @@ const AppContent = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Ensure initial landing always shows the Home section (nothing scrolled above it)
+  useEffect(() => {
+    if (isMounted) {
+      // Jump immediately to the home section (no animation)
+      scroller.scrollTo("home", { duration: 0, smooth: false, offset: -90 });
+    }
+  }, [isMounted]);
 
   const sections = [
     { id: "home", label: "Home", component: <HomePage /> },
