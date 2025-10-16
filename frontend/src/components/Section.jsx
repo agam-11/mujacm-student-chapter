@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 
-export default function Section({ children, threshold = 0.25 }) {
+export default function Section({ children, threshold = 0.1 }) {
   const ref = useRef(null);
   // Start visible to avoid content being hidden before the observer initializes
   const [visible, setVisible] = useState(true);
@@ -16,7 +16,7 @@ export default function Section({ children, threshold = 0.25 }) {
           setVisible(entry.isIntersecting);
         });
       },
-      { threshold, rootMargin: "-80px 0px -10px 0px" }
+      { threshold, rootMargin: "-120px 0px -10px 0px" }
     );
 
     observer.observe(node);

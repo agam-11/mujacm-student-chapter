@@ -42,7 +42,6 @@ const AppContent = () => {
         backgroundColor: theme.colors.bg,
         color: theme.colors.text,
         position: 'relative',
-        overflow: 'hidden',
       }}
     >
       
@@ -119,8 +118,8 @@ const AppContent = () => {
         </div>
       </header>
 
-      {/* Page Sections */}
-      <main>
+  {/* Page Sections */}
+  <main className="pt-28 md:pt-32">
         {sections.map(
           ({ id, component }) =>
             component && (

@@ -9,7 +9,7 @@ const StatCard = ({ value, label }) => (
 // Main App Component
 export default function AboutUsPage() {
   return (
-    <div className="relative min-h-screen w-full font-sans overflow-hidden text-white">
+  <div className="relative min-h-screen w-full font-sans text-white">
       {/* Background shapes for decoration */}
   <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         {/* You could add SVG patterns or other decorative elements here */}

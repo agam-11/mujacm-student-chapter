@@ -123,7 +123,7 @@ export default function ProjectsPage() {
     : projects.filter(project => project.category === filter);
 
   return (
-    <div className="relative min-h-screen w-full font-sans overflow-hidden text-white">
+    <div className="relative min-h-screen w-full font-sans text-white">
       {/* Background shapes for decoration */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-40 right-20 w-72 h-72 bg-cyan-400 rounded-full blur-3xl"></div>
