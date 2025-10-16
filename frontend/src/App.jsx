@@ -13,6 +13,7 @@ import logo from "/acm.png";
 // Light-theme blue logo (placed in public folder as /acmblue.png)
 import blueLogo from "/acmblue.png";
 import ThreeGlobe from "./components/ThreeGlobe";
+import TeamSection from "./pages/TeamPage";
 
 const AppContent = () => {
   const theme = useContext(ThemeContext);
@@ -25,7 +26,7 @@ const AppContent = () => {
   const sections = [
     { id: "home", label: "Home", component: <HomePage /> },
     { id: "about", label: "About Us", component: <AboutUsPage /> },
-    { id: "team", label: "Team" },
+    { id: "team", label: "Team", component: <TeamSection /> },
     { id: "events", label: "Events" },
     { id: "gallery", label: "Gallery" },
     { id: "projects", label: "Projects", component: <ProjectsPage /> },
@@ -39,109 +40,118 @@ const AppContent = () => {
     <div
       className="font-sans min-h-screen transition-colors duration-300"
       style={{
-        width: '100%',
+        width: "100%",
         backgroundColor: theme.colors.bg,
         color: theme.colors.text,
-        position: 'relative',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      
       {/* Three.js wireframe globe background - absolutely positioned behind everything */}
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: 0,
           left: 0,
-          width: '100%',
-          height: '100%',
+          width: "100%",
+          height: "100%",
           zIndex: 0,
-          pointerEvents: 'none',
+          pointerEvents: "none",
         }}
       >
         <ThreeGlobe isDark={theme.isDark} />
       </div>
 
       {/* Content wrapper with relative positioning to appear above background */}
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', flex: 1, overflow: 'auto' }}>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          width: "100%",
+          flex: 1,
+          overflow: "auto",
+        }}
+      >
         {/* Floating Navigation */}
         <header className="fixed top-0 left-0 right-0 z-50 py-4">
-        <div className="container mx-auto flex items-center justify-between px-4">
-          <div className="flex-shrink-0 flex items-center">
-            <img src={theme.isDark ? logo : blueLogo} alt="ACM logo" className="w-16 h-16 md:w-20 md:h-20 object-contain" />
-          </div>
-          
-          {/* Desktop Navigation - hidden on mobile */}
-          <div
-            className="hidden md:block rounded-full shadow-lg backdrop-blur-md"
-            style={{ backgroundColor: theme.colors.navBg }}
-          >
-            <nav>
-              <ul className="flex items-center justify-center gap-x-3 md:gap-x-6 px-4 py-3">
-                {sections.map(({ id, label, component }) => (
-                  <li key={id}>
-                    {component ? (
-                      <Link
-                        to={id}
-                        spy={true}
-                        smooth={true}
-                        offset={-90}
-                        duration={500}
-                        className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-pointer transition-colors duration-300 px-3 md:px-4 py-2 rounded-full"
-                        style={{
-                          color: theme.colors.text,
-                        }}
-                        activeStyle={{
-                          backgroundColor: `${theme.colors.accent}30`,
-                          color: theme.colors.accent,
-                        }}
-                      >
-                        {label}
-                      </Link>
-                    ) : (
-                      <span
-                        className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-not-allowed px-4 md:px-6 py-2 rounded-full"
-                        style={{ color: theme.colors.textSecondary }}
-                      >
-                        {label}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
+          <div className="container mx-auto flex items-center justify-between px-4">
+            <div className="flex-shrink-0 flex items-center">
+              <img
+                src={theme.isDark ? logo : blueLogo}
+                alt="ACM logo"
+                className="w-16 h-16 md:w-20 md:h-20 object-contain"
+              />
+            </div>
 
-          {/* Mobile & Desktop Controls */}
-          <div className="flex items-center gap-3">
-            <ThemeSwitcher />
-            <MobileMenu sections={sections} />
-          </div>
-        </div>
-      </header>
+            {/* Desktop Navigation - hidden on mobile */}
+            <div
+              className="hidden md:block rounded-full shadow-lg backdrop-blur-md"
+              style={{ backgroundColor: theme.colors.navBg }}
+            >
+              <nav>
+                <ul className="flex items-center justify-center gap-x-3 md:gap-x-6 px-4 py-3">
+                  {sections.map(({ id, label, component }) => (
+                    <li key={id}>
+                      {component ? (
+                        <Link
+                          to={id}
+                          spy={true}
+                          smooth={true}
+                          offset={-90}
+                          duration={500}
+                          className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-pointer transition-colors duration-300 px-3 md:px-4 py-2 rounded-full"
+                          style={{
+                            color: theme.colors.text,
+                          }}
+                          activeStyle={{
+                            backgroundColor: `${theme.colors.accent}30`,
+                            color: theme.colors.accent,
+                          }}
+                        >
+                          {label}
+                        </Link>
+                      ) : (
+                        <span
+                          className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-not-allowed px-4 md:px-6 py-2 rounded-full"
+                          style={{ color: theme.colors.textSecondary }}
+                        >
+                          {label}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
 
-  {/* Page Sections */}
-  <main className="pt-28 md:pt-32">
-        {sections.map(
-          ({ id, component }) =>
-            component && (
-              <Element key={id} name={id}>
-                <Section>{component}</Section>
-              </Element>
-            )
-        )}
-      </main>
+            {/* Mobile & Desktop Controls */}
+            <div className="flex items-center gap-3">
+              <ThemeSwitcher />
+              <MobileMenu sections={sections} />
+            </div>
+          </div>
+        </header>
+
+        {/* Page Sections */}
+        <main className="pt-28 md:pt-32">
+          {sections.map(
+            ({ id, component }) =>
+              component && (
+                <Element key={id} name={id}>
+                  <Section>{component}</Section>
+                </Element>
+              )
+          )}
+        </main>
       </div>
     </div>
   );
 };
 
 const App = () => {
-  return (
-    <AppContent />
-  );
+  return <AppContent />;
 };
 
 export default App;
