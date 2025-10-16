@@ -39,9 +39,13 @@ const AppContent = () => {
     <div
       className="font-sans min-h-screen transition-colors duration-300"
       style={{
+        width: '100%',
         backgroundColor: theme.colors.bg,
         color: theme.colors.text,
         position: 'relative',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       
@@ -61,7 +65,7 @@ const AppContent = () => {
       </div>
 
       {/* Content wrapper with relative positioning to appear above background */}
-      <div style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', flex: 1, overflow: 'auto' }}>
         {/* Floating Navigation */}
         <header className="fixed top-0 left-0 right-0 z-50 py-4">
         <div className="container mx-auto flex items-center justify-between px-4">
