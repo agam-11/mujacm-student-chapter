@@ -1,8 +1,18 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, ReactNode } from 'react';
 import { Link } from 'react-scroll';
 import ThemeContext from '../context/ThemeContext';
 
-export default function MobileMenu({ sections }) {
+interface Section {
+  id: string;
+  label: string;
+  component?: ReactNode;
+}
+
+interface MobileMenuProps {
+  sections: Section[];
+}
+
+export default function MobileMenu({ sections }: MobileMenuProps) {
   const theme = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -90,7 +100,7 @@ export default function MobileMenu({ sections }) {
         {/* Menu Items */}
         <nav className="px-4">
           <ul className="space-y-2">
-            {sections.map(({ id, label, component }) => (
+            {sections.map(({ id, label, component }: Section) => (
               <li key={id}>
                 {component ? (
                   <Link

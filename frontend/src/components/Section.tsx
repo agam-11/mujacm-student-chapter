@@ -1,6 +1,11 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, ReactNode } from "react";
 
-export default function Section({ children, threshold = 0.1 }) {
+interface SectionProps {
+  children: ReactNode;
+  threshold?: number;
+}
+
+export default function Section({ children, threshold = 0.1 }: SectionProps) {
   const ref = useRef(null);
   // Start visible to avoid content being hidden before the observer initializes
   const [visible, setVisible] = useState(true);

@@ -1,7 +1,18 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+
+type BlogProps = {
+  title: string;
+  excerpt: string;
+  author: string;
+  date: string;
+  category?: string;
+  readTime?: number;
+  image?: string | null;
+  link?: string | null;
+};
 
 // Blog Card Component
-const BlogCard = ({ title, excerpt, author, date, category, readTime, image, link }) => (
+const BlogCard: React.FC<BlogProps> = ({ title, excerpt, author, date, category, readTime = 5, image, link }) => (
   <div className="bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-white/40 transform hover:-translate-y-2 transition-all duration-300 shadow-xl">
     {/* Blog Image */}
     <div className="h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center overflow-hidden">
@@ -53,12 +64,12 @@ const BlogCard = ({ title, excerpt, author, date, category, readTime, image, lin
 );
 
 // Featured Blog Component (supports image + link)
-const FeaturedBlog = ({ title, excerpt, author, date, readTime, image, link }) => (
+const FeaturedBlog: React.FC<BlogProps> = ({ title, excerpt, author, date, readTime = 5, image, link }) => (
   <div className="bg-gradient-to-r from-purple-500 to-pink-500 bg-opacity-20 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-white/30 shadow-2xl mb-12">
     <div className="flex flex-col md:flex-row gap-8">
       <div className="flex-1">
         <span className="px-4 py-2 bg-white/20 rounded-full text-sm text-white font-semibold">
-          ⭐ Featured
+          Featured
         </span>
         <h2 className="text-3xl md:text-4xl font-bold text-white mt-4 mb-4">
           {title}
@@ -104,11 +115,11 @@ const FeaturedBlog = ({ title, excerpt, author, date, readTime, image, link }) =
 
 // Main Blogs Page Component
 export default function BlogsPage() {
-  const [filter, setFilter] = useState("all");
-  const [mediumBlogs, setMediumBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [availableCategories, setAvailableCategories] = useState([
+  const [filter, setFilter] = useState<string>("all");
+  const [mediumBlogs, setMediumBlogs] = useState<BlogProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [availableCategories, setAvailableCategories] = useState<string[]>([
     "all",
     "Web Development",
     "Machine Learning",
@@ -134,11 +145,11 @@ export default function BlogsPage() {
           throw new Error("Failed to fetch blogs");
         }
 
-        const data = await response.json();
+  const data: any = await response.json();
         
         if (data.status === "ok") {
           // Transform Medium posts to our blog format
-          const transformedBlogs = data.items.slice(0, 6).map((item) => {
+          const transformedBlogs: BlogProps[] = (data.items || []).slice(0, 6).map((item: any) => {
             // Extract first image from content if available
             const imgRegex = /<img[^>]+src="([^">]+)"/;
             const imgMatch = item.content?.match(imgRegex);
@@ -162,26 +173,26 @@ export default function BlogsPage() {
                 day: "numeric",
                 year: "numeric",
               }),
-              category: item.categories?.[0] || "Technology",
+              category: (item.categories && item.categories[0]) || "Technology",
               readTime: readTime > 0 ? readTime : 5,
               image: image,
-              link: item.link,
-            };
+              link: item.link || null,
+            } as BlogProps;
           });
 
           setMediumBlogs(transformedBlogs);
           
           // Extract unique categories from Medium blogs
           if (transformedBlogs.length > 0) {
-            const uniqueCategories = ["all", ...new Set(transformedBlogs.map(blog => blog.category))];
-            setAvailableCategories(uniqueCategories);
+            const uniqueCategories = Array.from(new Set<string>(["all", ...transformedBlogs.map((blog) => blog.category || "")].filter(Boolean)));
+            setAvailableCategories(uniqueCategories.length ? uniqueCategories : ["all"]);
           }
         } else {
           throw new Error("Invalid response from RSS feed");
         }
       } catch (err) {
         console.error("Error fetching Medium blogs:", err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : String(err));
       } finally {
         setLoading(false);
       }

@@ -9,9 +9,6 @@ import Section from "./components/Section";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import MobileMenu from "./components/MobileMenu";
 import ThemeContext from "./context/ThemeContext";
-import logo from "/acm.png";
-// Light-theme blue logo (placed in public folder as /acmblue.png)
-import blueLogo from "/acmblue.png";
 import ThreeGlobe from "./components/ThreeGlobe";
 import TeamSection from "./pages/TeamPage";
 
@@ -88,7 +85,7 @@ const AppContent = () => {
           <div className="container mx-auto flex items-center justify-between px-4">
             <div className="flex-shrink-0 flex items-center">
               <img
-                src={theme?.isDark ? logo : blueLogo}
+                src={theme?.isDark ? '/acm.png' : '/acmblue.png'}
                 alt="ACM logo"
                 className="w-16 h-16 md:w-20 md:h-20 object-contain"
               />

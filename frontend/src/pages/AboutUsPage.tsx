@@ -1,5 +1,11 @@
+// Stat Card Props interface
+interface StatCardProps {
+  value: string;
+  label: string;
+}
+
 // Stat Card Component for the "About Us" section
-const StatCard = ({ value, label }) => (
+const StatCard: React.FC<StatCardProps> = ({ value, label }) => (
   <div className="bg-cyan-500 bg-opacity-80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg transform hover:-translate-y-2 transition-transform duration-300">
     <p className="text-4xl md:text-5xl font-bold text-white">{value}</p>
     <p className="text-md md:text-lg text-white mt-1">{label}</p>
@@ -20,8 +26,8 @@ export default function AboutUsPage() {
           {/* Single wider glass panel containing heading, description and mission */}
           <div className="mb-12 max-w-5xl">
             <div className="glass-light px-6 py-6">
-              <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-gray-900">About Us</h2>
-              <p className="text-lg text-gray-800 mb-4">
+              <h2 className="text-4xl sm:text-5xl font-bold mb-4">About Us</h2>
+              <p className="text-lg mb-4">
                 The Association for Computing Machinery (ACM) stands at the
                 forefront of the computing world as the world's largest educational and
                 scientific computing society. With a rich history and an expansive
@@ -33,7 +39,7 @@ export default function AboutUsPage() {
               </p>
 
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">Our Mission</h3>
-              <p className="text-lg text-gray-800">
+              <p className="text-lg">
                 To build a supportive community where students can learn, share
                 knowledge, and engage in exciting computing projects. We focus on
                 mentorship, hands-on learning, and collaboration to help students

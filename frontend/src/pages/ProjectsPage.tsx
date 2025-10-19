@@ -1,7 +1,17 @@
 import { useState } from "react";
 
+// Project Card Props interface
+interface ProjectCardProps {
+  title: string;
+  description: string;
+  tags: string[];
+  image?: string;
+  githubLink: string;
+  liveLink?: string;
+}
+
 // Project Card Component
-const ProjectCard = ({ title, description, tags, image, githubLink, liveLink }) => (
+const ProjectCard: React.FC<ProjectCardProps> = ({ title, description, tags, image, githubLink, liveLink }) => (
   <div className="bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:border-white/40 transform hover:-translate-y-2 transition-all duration-300 shadow-xl">
     {/* Project Image */}
     <div className="h-48 bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
@@ -19,7 +29,7 @@ const ProjectCard = ({ title, description, tags, image, githubLink, liveLink }) 
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {tags.map((tag, index) => (
+        {tags.map((tag: string, index: number) => (
           <span
             key={index}
             className="px-3 py-1 bg-cyan-500/30 rounded-full text-sm text-cyan-100 border border-cyan-400/30"

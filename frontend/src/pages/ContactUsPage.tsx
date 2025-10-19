@@ -1,7 +1,15 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
+
+// Contact Info Card Props interface
+interface ContactInfoCardProps {
+  icon: string;
+  title: string;
+  info: string;
+  link?: string;
+}
 
 // Contact Info Card Component
-const ContactInfoCard = ({ icon, title, info, link }) => (
+const ContactInfoCard: React.FC<ContactInfoCardProps> = ({ icon, title, info, link }) => (
   <div className="bg-cyan-500/20 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/30 hover:border-cyan-400/60 transform hover:-translate-y-2 transition-all duration-300">
     <div className="text-4xl mb-4">{icon}</div>
     <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
@@ -15,27 +23,35 @@ const ContactInfoCard = ({ icon, title, info, link }) => (
   </div>
 );
 
+// Form data interface
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
 // Main Contact Us Page Component
 export default function ContactUsPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     subject: "",
     message: "",
   });
-  const [status, setStatus] = useState('idle'); // idle | sending | success | error
-  const [errorMsg, setErrorMsg] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+  const API_BASE = (import.meta as any).env.VITE_API_BASE || 'http://localhost:5000';
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('sending');
     setErrorMsg('');
@@ -58,7 +74,7 @@ export default function ContactUsPage() {
       setTimeout(() => setStatus('idle'), 4000);
     } catch (err) {
       setStatus('error');
-      setErrorMsg(err.message || 'Network error');
+      setErrorMsg(err instanceof Error ? err.message : 'Network error');
       console.error('Contact submit error:', err);
     }
   };
@@ -172,7 +188,7 @@ export default function ContactUsPage() {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows="6"
+                  rows={6}
                   className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-300 resize-none backdrop-blur-sm"
                   placeholder="Tell us more..."
                   style={{ WebkitTextFillColor: 'white' }}
