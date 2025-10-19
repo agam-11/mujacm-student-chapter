@@ -74,12 +74,17 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
 
     const colors = getColors(isDark);
 
-    // Responsive scaling based on viewport
-    const isMobile = window.innerWidth < 768;
-    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-    
-    const globeScale = isMobile ? 0.6 : isTablet ? 0.8 : 1.0;
-    const cameraDistance = isMobile ? 3 : isTablet ? 2.5 : 2;
+  // Responsive scaling based on viewport (prefer visualViewport on mobile)
+  const vw = (window as any).visualViewport ? (window as any).visualViewport.width : window.innerWidth;
+  const vh = (window as any).visualViewport ? (window as any).visualViewport.height : window.innerHeight;
+  const isMobile = vw < 768;
+  const isTablet = vw >= 768 && vw < 1024;
+
+  const globeScale = isMobile ? 0.6 : isTablet ? 0.8 : 1.0;
+  const cameraDistance = isMobile ? 1.25 : isTablet ? 2.5 : 2;
+  // store responsive values in refs so animate/resize handlers can access them
+  const cameraDistanceRef = { current: cameraDistance } as { current: number };
+  const globeScaleRef = { current: globeScale } as { current: number };
     const starCount = isMobile ? 500 : isTablet ? 1000 : 1500;
     const rayCount = isMobile ? 75 : isTablet ? 75 : 75;
     const rocketCount = isMobile ? 1 : isTablet ? 2 : 3;
@@ -91,11 +96,11 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      vw / vh,
       0.1,
       1000
     );
-    camera.position.z = cameraDistance;
+    camera.position.z = cameraDistanceRef.current;
     cameraRef.current = camera;
 
     // Renderer setup
@@ -104,7 +109,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       alpha: true,
       preserveDrawingBuffer: true
     });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(vw, vh);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(colors.bg, 1);
     renderer.domElement.style.position = 'fixed';
@@ -127,7 +132,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     console.log("ThreeGlobe: Renderer created and added to DOM");
 
     // Create globe (wireframe sphere)
-    const geometry = new THREE.SphereGeometry(1.15 * globeScale, 32, 32);
+    const geometry = new THREE.SphereGeometry(1.15 * globeScaleRef.current, 32, 32);
     const material = new THREE.MeshBasicMaterial({
       color: colors.globe,
       wireframe: true,
@@ -273,13 +278,31 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Handle window resize
+    // Handle window / visualViewport resize
     const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      const newVw = (window as any).visualViewport ? (window as any).visualViewport.width : window.innerWidth;
+      const newVh = (window as any).visualViewport ? (window as any).visualViewport.height : window.innerHeight;
+
+      // recompute responsive scales
+      const newIsMobile = newVw < 768;
+      const newIsTablet = newVw >= 768 && newVw < 1024;
+      cameraDistanceRef.current = newIsMobile ? 3 : newIsTablet ? 2.5 : 2;
+      globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
+
+      camera.aspect = newVw / newVh;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(newVw, newVh);
+
+      // adjust globe scale if present
+      if (globeRef.current) {
+        globeRef.current.scale.setScalar(globeScaleRef.current);
+      }
     };
     window.addEventListener('resize', handleResize);
+    if ((window as any).visualViewport) {
+      (window as any).visualViewport.addEventListener('resize', handleResize);
+      (window as any).visualViewport.addEventListener('scroll', handleResize);
+    }
 
     // Animation loop
     let frameCount = 0;
@@ -293,11 +316,12 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
         globeRef.current.rotation.x += 0.0001;
       }
 
-      // Adjust camera position based on mouse
-      camera.position.x = mouseX.current * 0.3;
-      camera.position.y = mouseY.current * 0.3;
-      camera.position.z = 2;
-      camera.lookAt(0, 0, 0);
+  // Adjust camera position based on mouse
+  camera.position.x = mouseX.current * 0.3;
+  camera.position.y = mouseY.current * 0.3;
+  // respect responsive camera distance stored in ref
+  if ((camera as any).position) camera.position.z = (cameraDistanceRef as any).current;
+  camera.lookAt(0, 0, 0);
 
       // Update stars
       if (starsRef.current) {
