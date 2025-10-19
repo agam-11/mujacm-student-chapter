@@ -45,6 +45,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
   const mouseX = useRef<number>(0);
   const mouseY = useRef<number>(0);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const cameraZTargetRef = useRef<number>(2);
   const animationIdRef = useRef<number | null>(null);
 
   // Color scheme based on theme
@@ -101,6 +102,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       1000
     );
     camera.position.z = cameraDistanceRef.current;
+    cameraZTargetRef.current = cameraDistanceRef.current;
     cameraRef.current = camera;
 
     // Renderer setup
@@ -278,24 +280,19 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Handle window / visualViewport resize
+    // Handle window / visualViewport resize: only update renderer size and globe scale.
     const handleResize = () => {
       const newVw = (window as any).visualViewport ? (window as any).visualViewport.width : window.innerWidth;
       const newVh = (window as any).visualViewport ? (window as any).visualViewport.height : window.innerHeight;
-
-  // recompute responsive scales
-  const newIsMobile = newVw < 768;
-  const newIsTablet = newVw >= 768 && newVw < 1024;
-  // Keep the same camera distances used at initialization so scroll/visualViewport
-  // updates don't push the camera unexpectedly far away.
-  cameraDistanceRef.current = newIsMobile ? 1.25 : newIsTablet ? 2.5 : 2;
-  globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
 
       camera.aspect = newVw / newVh;
       camera.updateProjectionMatrix();
       renderer.setSize(newVw, newVh);
 
-      // adjust globe scale if present
+      // recompute globe scale but DO NOT change camera distance
+      const newIsMobile = newVw < 768;
+      const newIsTablet = newVw >= 768 && newVw < 1024;
+      globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
       if (globeRef.current) {
         globeRef.current.scale.setScalar(globeScaleRef.current);
       }
@@ -321,8 +318,9 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
   // Adjust camera position based on mouse
   camera.position.x = mouseX.current * 0.3;
   camera.position.y = mouseY.current * 0.3;
-  // respect responsive camera distance stored in ref
-  if ((camera as any).position) camera.position.z = (cameraDistanceRef as any).current;
+  // Smoothly interpolate camera z towards the target to avoid sudden jumps
+  const targetZ = cameraZTargetRef.current;
+  camera.position.z += (targetZ - camera.position.z) * 0.08;
   camera.lookAt(0, 0, 0);
 
       // Update stars
