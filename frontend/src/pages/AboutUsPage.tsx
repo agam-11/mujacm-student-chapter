@@ -17,23 +17,30 @@ export default function AboutUsPage() {
 
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-5xl text-left">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6">About Us</h2>
-          <p className="text-lg text-gray-200 mb-12">
-            The Association for Computing Machinery (ACM) stands at the
-            forefront of the computing world as world's largest educational and
-            scientific computing society. With a rich history and an expansive
-            network, ACM is dedicated to advancing computing as a discipline and
-            profession. Through its commitment to research, education, and
-            collaboration, ACM serves as a vital hub for connecting computing
-            professionals, fostering innovation, and promoting ethical
-            practices.
-          </p>
+          {/* Single wider glass panel containing heading, description and mission */}
+          <div className="mb-12 max-w-5xl">
+            <div className="glass-light px-6 py-6">
+              <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-gray-900">About Us</h2>
+              <p className="text-lg text-gray-800 mb-4">
+                The Association for Computing Machinery (ACM) stands at the
+                forefront of the computing world as the world's largest educational and
+                scientific computing society. With a rich history and an expansive
+                network, ACM is dedicated to advancing computing as a discipline and
+                profession. Through its commitment to research, education, and
+                collaboration, ACM serves as a vital hub for connecting computing
+                professionals, fostering innovation, and promoting ethical
+                practices.
+              </p>
 
-          <h3 className="text-3xl sm:text-4xl font-bold mb-4">Our Mission</h3>
-          <p className="text-lg text-gray-200 mb-16">
-            To build a supportive community where students can learn, share
-            knowledge, and engage in exciting computing projects
-          </p>
+              <h3 className="text-2xl sm:text-3xl font-bold mb-2">Our Mission</h3>
+              <p className="text-lg text-gray-800">
+                To build a supportive community where students can learn, share
+                knowledge, and engage in exciting computing projects. We focus on
+                mentorship, hands-on learning, and collaboration to help students
+                develop practical skills and contribute to meaningful projects.
+              </p>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <StatCard value="120+" label="Members" />

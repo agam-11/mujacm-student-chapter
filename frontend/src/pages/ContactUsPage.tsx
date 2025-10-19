@@ -78,9 +78,13 @@ export default function ContactUsPage() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
               Get In Touch
             </h1>
-            <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
-              Have questions or want to join our community? We'd love to hear from you!
-            </p>
+            <div className="max-w-2xl mx-auto">
+              <div className="glass-light mx-auto">
+                <p className="text-lg md:text-xl text-gray-800">
+                  Have questions or want to join our community? We'd love to hear from you!
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Contact Info Cards */}

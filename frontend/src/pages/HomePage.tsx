@@ -39,13 +39,24 @@ export default function HomePage() {
             WE ARE MUJ ACM STUDENT CHAPTER
           </h1>
 
-          {/* Descriptive Paragraph */}
-          <p 
-            className="text-xs sm:text-sm md:text-base leading-relaxed mb-10 max-w-2xl mx-auto"
-            style={{ color: theme?.colors?.textSecondary }}
-          >
-            A dynamic community of tech enthusiasts driven by passion to explore computing. We nurture talent, promote learning, and foster innovation through collaborative projects and industry engagement.
-          </p>
+          {/* Descriptive Paragraph with translucent blurred background for readability */}
+          <div className="mx-auto mb-10 max-w-2xl">
+            <div
+              className="mx-auto px-4 py-3 rounded-lg"
+              style={{
+                // Make a subtle glass blur in light mode (not a solid white box)
+                background: theme?.isDark ? 'transparent' : 'rgba(255,255,255,0.06)',
+                color: theme?.colors?.textSecondary,
+                backdropFilter: theme?.isDark ? 'none' : 'blur(12px)',
+                WebkitBackdropFilter: theme?.isDark ? 'none' : 'blur(12px)',
+                border: theme?.isDark ? 'none' : '1px solid rgba(0,0,0,0.06)'
+              }}
+            >
+              <p className="text-xs sm:text-sm md:text-base leading-relaxed">
+                A dynamic community of tech enthusiasts driven by passion to explore computing. We nurture talent, promote learning, and foster innovation through collaborative projects and industry engagement.
+              </p>
+            </div>
+          </div>
 
           {/* Buttons removed as per request */}
         </div>

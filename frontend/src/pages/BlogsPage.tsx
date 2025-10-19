@@ -280,11 +280,15 @@ export default function BlogsPage() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
               Our Blogs
             </h1>
-            <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
-              Insights, tutorials, and stories from our community of tech
-              enthusiasts. Stay updated with the latest in technology and
-              innovation.
-            </p>
+            <div className="max-w-3xl mx-auto">
+              <div className="glass-light mx-auto">
+                <p className="text-lg md:text-xl text-gray-800">
+                  Insights, tutorials, and stories from our community of tech
+                  enthusiasts. Stay updated with the latest in technology and
+                  innovation.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Featured Blog (only show if we have a featured post from Medium) */}
@@ -349,10 +353,14 @@ export default function BlogsPage() {
             <h2 className="text-3xl font-bold mb-4">
               Subscribe to Our Newsletter
             </h2>
-            <p className="text-lg text-gray-200 mb-6 max-w-2xl mx-auto">
-              Get the latest blog posts, event updates, and tech news delivered
-              straight to your inbox every week!
-            </p>
+            <div className="max-w-2xl mx-auto">
+              <div className="glass-light mx-auto mb-6">
+                <p className="text-lg text-gray-800">
+                  Get the latest blog posts, event updates, and tech news delivered
+                  straight to your inbox every week!
+                </p>
+              </div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"

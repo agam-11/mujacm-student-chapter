@@ -137,11 +137,15 @@ export default function ProjectsPage() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
               Our Projects
             </h1>
-            <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
-              Explore the innovative projects built by our talented members.
-              From web applications to AI solutions, we're pushing the
-              boundaries of technology.
-            </p>
+            <div className="max-w-3xl mx-auto">
+              <div className="glass-light mx-auto">
+                <p className="text-lg md:text-xl text-gray-800">
+                  Explore the innovative projects built by our talented members.
+                  From web applications to AI solutions, we're pushing the
+                  boundaries of technology.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Filter Buttons */}
@@ -178,11 +182,15 @@ export default function ProjectsPage() {
           {/* Call to Action */}
           <div className="mt-16 text-center bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-white/20">
             <h2 className="text-3xl font-bold mb-4">Want to Contribute?</h2>
-            <p className="text-lg text-gray-200 mb-6 max-w-2xl mx-auto">
-              We're always looking for passionate students to join our projects
-              or start new ones. Share your ideas and collaborate with fellow
-              members!
-            </p>
+            <div className="max-w-2xl mx-auto">
+              <div className="glass-light mx-auto mb-6">
+                <p className="text-lg text-gray-800">
+                  We're always looking for passionate students to join our projects
+                  or start new ones. Share your ideas and collaborate with fellow
+                  members!
+                </p>
+              </div>
+            </div>
             <button className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out">
               Submit Your Project
             </button>
