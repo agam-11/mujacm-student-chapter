@@ -1,5 +1,5 @@
 import { Link, Element, scroller } from "react-scroll";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, ReactNode } from "react";
 import HomePage from "./pages/HomePage";
 import AboutUsPage from "./pages/AboutUsPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -8,16 +8,22 @@ import ContactUsPage from "./pages/ContactUsPage";
 import Section from "./components/Section";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import MobileMenu from "./components/MobileMenu";
-import { ThemeContext } from "./context/ThemeContext";
+import ThemeContext from "./context/ThemeContext";
 import logo from "/acm.png";
 // Light-theme blue logo (placed in public folder as /acmblue.png)
 import blueLogo from "/acmblue.png";
 import ThreeGlobe from "./components/ThreeGlobe";
 import TeamSection from "./pages/TeamPage";
 
+interface Section {
+  id: string;
+  label: string;
+  component?: ReactNode;
+}
+
 const AppContent = () => {
   const theme = useContext(ThemeContext);
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,7 +37,7 @@ const AppContent = () => {
     }
   }, [isMounted]);
 
-  const sections = [
+  const sections: Section[] = [
     { id: "home", label: "Home", component: <HomePage /> },
     { id: "about", label: "About Us", component: <AboutUsPage /> },
     { id: "team", label: "Team", component: <TeamSection /> },
@@ -49,8 +55,8 @@ const AppContent = () => {
       className="font-sans min-h-screen transition-colors duration-300"
       style={{
         width: "100%",
-        backgroundColor: theme.colors.bg,
-        color: theme.colors.text,
+        backgroundColor: theme?.colors?.bg || "#110053",
+        color: theme?.colors?.text || "#ffffff",
         position: "relative",
       }}
     >
@@ -66,7 +72,7 @@ const AppContent = () => {
           pointerEvents: "none",
         }}
       >
-        <ThreeGlobe isDark={theme.isDark} />
+        <ThreeGlobe isDark={theme?.isDark || true} />
       </div>
 
       {/* Content wrapper with relative positioning to appear above background */}
@@ -82,7 +88,7 @@ const AppContent = () => {
           <div className="container mx-auto flex items-center justify-between px-4">
             <div className="flex-shrink-0 flex items-center">
               <img
-                src={theme.isDark ? logo : blueLogo}
+                src={theme?.isDark ? logo : blueLogo}
                 alt="ACM logo"
                 className="w-16 h-16 md:w-20 md:h-20 object-contain"
               />
@@ -91,7 +97,7 @@ const AppContent = () => {
             {/* Desktop Navigation - hidden on mobile */}
             <div
               className="hidden md:block rounded-full shadow-lg backdrop-blur-md"
-              style={{ backgroundColor: theme.colors.navBg }}
+              style={{ backgroundColor: theme?.colors?.navBg || "rgba(255, 255, 255, 0.1)" }}
             >
               <nav>
                 <ul className="flex items-center justify-center gap-x-3 md:gap-x-6 px-4 py-3">
@@ -107,7 +113,7 @@ const AppContent = () => {
                           className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-pointer transition-colors duration-300 px-3 md:px-4 py-2 rounded-full"
                           activeClass="nav-link-active"
                           style={{
-                            color: theme.colors.text,
+                            color: theme?.colors?.text || "#ffffff",
                           }}
                         >
                           {label}
@@ -115,7 +121,7 @@ const AppContent = () => {
                       ) : (
                         <span
                           className="font-bold uppercase tracking-wider text-sm md:text-base lg:text-lg cursor-not-allowed px-4 md:px-6 py-2 rounded-full"
-                          style={{ color: theme.colors.textSecondary }}
+                          style={{ color: theme?.colors?.textSecondary || "#d4d4d4" }}
                         >
                           {label}
                         </span>

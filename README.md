@@ -1,16 +1,22 @@
-# MUJ ACM Student Chapter — Frontend
+````markdown
+# MUJ ACM Student Chapter
 
-This repository contains the frontend for the MUJ ACM Student Chapter website. It's a Vite + React app that includes a Three.js animated background (`ThreeGlobe`) and a theme system (dark/light) with a theme switcher and mobile-responsive navigation.
+This repository contains the frontend and backend for the MUJ ACM Student Chapter website. The frontend is a Vite + React app with Three.js animated background and theme system. The backend handles contact forms, email notifications.
 
-## What’s included
+## What's included
 
-- `frontend/` — main Vite React application
+- `frontend/` — Vite + React application
   - `src/components/ThreeGlobe.jsx` — Three.js animated globe, stars, rays, and small rockets/UFOs
   - `src/context/ThemeContext.jsx` — Theme provider with localStorage persistence
   - `src/components/ThemeSwitcher.jsx` — Light/Dark toggle button
   - `src/components/MobileMenu.jsx` — Mobile hamburger menu and slide-in nav panel
   - `index.html` — includes Sreda font import
   - `src/index.css` — global styles and light-theme overrides
+
+- `backend/` — Express.js server with cron jobs
+  - Contact form API with email notifications (Nodemailer)
+  - Keep-alive cron job (every 10 minutes)
+  - Health check endpoint for monitoring
 
 ## Requirements
 
@@ -19,29 +25,93 @@ This repository contains the frontend for the MUJ ACM Student Chapter website. I
 
 ## Setup (dev)
 
-Open a terminal and run:
+### Frontend
 
-```powershell
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-This starts the Vite dev server and opens the app at `http://localhost:5173` (or another port shown in the terminal).
+This starts the Vite dev server at `http://localhost:5173`.
+
+### Backend
+
+```bash
+cd backend
+cp .env.example .env
+# Edit .env with your email credentials
+npm install
+npm run dev
+```
+
+This starts the Express server at `http://localhost:5000`.
+
+**Note:** For the backend, you'll need to set up Gmail app-specific password or configure another SMTP service in `.env`. See `backend/README.md` for detailed setup instructions.
 
 ## Build (production)
 
-```powershell
+### Frontend
+
+```bash
 cd frontend
 npm run build
 npm run preview  # optional: preview the production build locally
 ```
 
-## Notes for contributors
+### Backend
 
-- The `ThreeGlobe` component is heavy on CPU/GPU due to many particles and animations. It has viewport-based scaling logic to reduce counts on smaller screens. If you change constants like `starCount`, `rayCount`, or `rocketCount`, consider updating the responsive logic accordingly.
-- The theme system uses `document.documentElement` class toggling (`light-theme` / `dark-theme`) plus CSS overrides to force black text in light mode. Some page components still include Tailwind `text-white` classes; the global overrides are used to ensure text turns black in light mode. If you prefer, refactor page components to use the theme context directly for colors.
-- Logo assets are expected in `frontend/public/` as `acm.png` (dark theme) and `acmblue.png` (light theme).
+```bash
+cd backend
+npm start
+```
+
+---
+
+## Backend Features
+
+The backend provides:
+
+- **Contact Form API** (`POST /api/contact`)
+  - Receives form submissions and sends emails to admin inbox
+  - Sends automatic confirmation email to user
+  - Email validation and error handling
+
+- **Keep-Alive Cron Job**
+  - Pings `/health` endpoint every 10 minutes
+  - Prevents server sleep on free hosting (Render, Railway, etc.)
+
+- **Health Check** (`GET /health`)
+  - Monitors server uptime and status
+
+For detailed backend documentation, see `backend/README.md`.
+
+## API Usage
+
+### Contact Form
+
+```javascript
+// From frontend React component
+const handleContactSubmit = async (formData) => {
+  const response = await fetch('http://localhost:5000/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: 'John Doe',
+      email: 'john@example.com',
+      subject: 'Inquiry',
+      message: 'Hello...'
+    })
+  });
+  const data = await response.json();
+  console.log(data);
+};
+```
+
+---
+
+If you'd like, I can also add a short CONTRIBUTING.md or an issue template. Let me know what else to include.
+````
 
 ## How to test mobile responsiveness
 

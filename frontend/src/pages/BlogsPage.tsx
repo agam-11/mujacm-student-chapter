@@ -53,7 +53,7 @@ const BlogCard = ({ title, excerpt, author, date, category, readTime, image, lin
 );
 
 // Featured Blog Component (supports image + link)
-const FeaturedBlog = ({ title, excerpt, author, date, category, readTime, image, link }) => (
+const FeaturedBlog = ({ title, excerpt, author, date, readTime, image, link }) => (
   <div className="bg-gradient-to-r from-purple-500 to-pink-500 bg-opacity-20 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-white/30 shadow-2xl mb-12">
     <div className="flex flex-col md:flex-row gap-8">
       <div className="flex-1">

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-scroll';
-import { ThemeContext } from '../context/ThemeContext';
+import ThemeContext from '../context/ThemeContext';
 
 export default function MobileMenu({ sections }) {
   const theme = useContext(ThemeContext);

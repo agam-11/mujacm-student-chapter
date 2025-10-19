@@ -1,9 +1,12 @@
-import { createContext, useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
+import ThemeContext, { ThemeValue } from './ThemeContext';
 
-export const ThemeContext = createContext();
+interface ThemeProviderProps {
+  children: ReactNode;
+}
 
-export const ThemeProvider = ({ children }) => {
-  const [isDark, setIsDark] = useState(true);
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const [isDark, setIsDark] = useState<boolean>(true);
 
   // Load theme from localStorage on mount
   useEffect(() => {
@@ -28,7 +31,7 @@ export const ThemeProvider = ({ children }) => {
         document.documentElement.classList.remove('dark-theme');
         document.documentElement.classList.add('light-theme');
       }
-    } catch (e) {
+    } catch {
       // SSR or environments without document
     }
   }, [isDark]);
@@ -37,7 +40,7 @@ export const ThemeProvider = ({ children }) => {
     setIsDark(!isDark);
   };
 
-  const theme = {
+  const theme: ThemeValue = {
     isDark,
     toggleTheme,
     colors: isDark
@@ -71,3 +74,5 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
+
+export default ThemeProvider;

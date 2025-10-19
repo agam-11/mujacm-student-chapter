@@ -1,4 +1,7 @@
 // Main App Component
+import Section from "../components/Section";
+import WhatWeDo from "../components/WhatWeDo";
+
 export default function HomePage() {
   return (
   <div className="relative min-h-screen w-full font-sans text-white">
@@ -30,6 +33,10 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+      {/* What We Do section - kept on the landing page */}
+      <Section>
+        <WhatWeDo />
+      </Section>
     </div>
   );
 }

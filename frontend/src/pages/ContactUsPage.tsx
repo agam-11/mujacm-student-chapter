@@ -23,6 +23,10 @@ export default function ContactUsPage() {
     subject: "",
     message: "",
   });
+  const [status, setStatus] = useState('idle'); // idle | sending | success | error
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
   const handleChange = (e) => {
     setFormData({
@@ -31,12 +35,32 @@ export default function ContactUsPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    alert("Thank you for reaching out! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setStatus('sending');
+    setErrorMsg('');
+
+    try {
+      const res = await fetch(`${API_BASE}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Submission failed');
+      }
+
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      // reset to idle after a short delay
+      setTimeout(() => setStatus('idle'), 4000);
+    } catch (err) {
+      setStatus('error');
+      setErrorMsg(err.message || 'Network error');
+      console.error('Contact submit error:', err);
+    }
   };
 
   return (
@@ -150,12 +174,19 @@ export default function ContactUsPage() {
                   style={{ WebkitTextFillColor: 'white' }}
                 ></textarea>
               </div>
+              {status === 'error' && (
+                <div className="text-center text-red-400 mb-3">Error: {errorMsg}</div>
+              )}
+              {status === 'success' && (
+                <div className="text-center text-green-400 mb-3">✓ Message sent! Check your email.</div>
+              )}
               <div className="text-center">
                 <button
                   type="submit"
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out"
+                  disabled={status === 'sending'}
+                  className={`bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out ${status === 'sending' ? 'opacity-60 cursor-not-allowed' : ''}`}
                 >
-                  Send Message
+                  {status === 'sending' ? 'Sending...' : 'Send Message'}
                 </button>
               </div>
             </form>
