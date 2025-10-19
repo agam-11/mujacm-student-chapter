@@ -20,7 +20,7 @@ export default function HomePage() {
           {/* Floating Animated Logo */}
           <div className="mb-12 md:mb-16">
             <img
-              src="/acm.png"
+              src={theme?.isDark ? '/acm.png' : '/acmblue.png'}
               alt="MUJ ACM Logo"
               className="w-44 h-44 md:w-60 md:h-60 mx-auto object-contain animate-float-slow"
               style={{
