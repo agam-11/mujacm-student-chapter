@@ -283,11 +283,13 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       const newVw = (window as any).visualViewport ? (window as any).visualViewport.width : window.innerWidth;
       const newVh = (window as any).visualViewport ? (window as any).visualViewport.height : window.innerHeight;
 
-      // recompute responsive scales
-      const newIsMobile = newVw < 768;
-      const newIsTablet = newVw >= 768 && newVw < 1024;
-      cameraDistanceRef.current = newIsMobile ? 3 : newIsTablet ? 2.5 : 2;
-      globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
+  // recompute responsive scales
+  const newIsMobile = newVw < 768;
+  const newIsTablet = newVw >= 768 && newVw < 1024;
+  // Keep the same camera distances used at initialization so scroll/visualViewport
+  // updates don't push the camera unexpectedly far away.
+  cameraDistanceRef.current = newIsMobile ? 1.25 : newIsTablet ? 2.5 : 2;
+  globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
 
       camera.aspect = newVw / newVh;
       camera.updateProjectionMatrix();
