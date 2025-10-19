@@ -26,8 +26,12 @@ body {
 	padding: 0;
 }
 
-/* Light theme overrides: force black text for most elements to ensure readability */
-.light-theme {
+/* Light theme overrides - force pure white background and black text */
+.light-theme,
+.light-theme html,
+.light-theme body,
+.light-theme #root {
+	background-color: #ffffff !important;
 	color: #000000 !important;
 }
 
@@ -41,14 +45,87 @@ body {
 .light-theme a,
 .light-theme span,
 .light-theme label,
-.light-theme li,
-.light-theme button {
+.light-theme li {
 	color: #000000 !important;
 }
 
-/* Ensure backgrounds don't force dark text to be unreadable */
-.light-theme .bg-dark {
-	background-color: transparent !important;
+/* Light theme text color classes */
+.light-theme .text-white {
+	color: #000000 !important;
+}
+
+/* Catch Tailwind opacity variants like bg-white/20, bg-white/30, border-white/30 etc */
+.light-theme [class*="bg-white/"] {
+	background-color: #ffffff !important;
+	color: #000000 !important;
+}
+
+.light-theme [class*="border-white/"] {
+	border-color: #000000 !important;
+}
+
+.light-theme [class*="border-white"] {
+	border-color: #000000 !important;
+}
+
+.light-theme [class*="text-white"] {
+	color: #000000 !important;
+}
+
+.light-theme .text-gray-200 {
+	color: #333333 !important;
+}
+
+.light-theme .text-gray-300 {
+	color: #4a4a4a !important;
+}
+
+.light-theme .text-gray-400 {
+	color: #666666 !important;
+}
+
+/* Light theme button styles */
+.light-theme button,
+.light-theme .btn {
+	background-color: #ffffff !important;
+	color: #000000 !important;
+	border-color: #000000 !important;
+}
+
+.light-theme button:hover,
+.light-theme .btn:hover {
+	background-color: #e8e8e8 !important;
+	transform: scale(1.05);
+}
+
+.light-theme .bg-white {
+	background-color: #ffffff !important;
+	color: #000000 !important;
+}
+
+.light-theme .border-white {
+	border-color: #000000 !important;
+}
+
+/* Light theme inputs and forms */
+.light-theme input,
+.light-theme textarea,
+.light-theme select {
+	background-color: #ffffff !important;
+	color: #000000 !important;
+	border-color: #cccccc !important;
+}
+
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+	color: #999999 !important;
+}
+
+/* Light theme cards and backgrounds */
+.light-theme .bg-dark,
+.light-theme [class*="bg-opacity"] {
+	background-color: #ffffff !important;
+	color: #000000 !important;
 }
 
 /* Active navigation link styles for react-scroll */

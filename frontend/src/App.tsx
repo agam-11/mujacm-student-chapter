@@ -72,7 +72,7 @@ const AppContent = () => {
           pointerEvents: "none",
         }}
       >
-        <ThreeGlobe isDark={theme?.isDark || true} />
+  <ThreeGlobe isDark={Boolean(theme?.isDark)} />
       </div>
 
       {/* Content wrapper with relative positioning to appear above background */}

@@ -27,9 +27,14 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       if (isDark) {
         document.documentElement.classList.remove('light-theme');
         document.documentElement.classList.add('dark-theme');
+        document.body.style.backgroundColor = '#110053';
+        document.body.style.color = '#ffffff';
       } else {
         document.documentElement.classList.remove('dark-theme');
         document.documentElement.classList.add('light-theme');
+        // enforce pure white background and pure black text for light mode
+        document.body.style.backgroundColor = '#ffffff';
+        document.body.style.color = '#000000';
       }
     } catch {
       // SSR or environments without document
@@ -56,12 +61,12 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           border: 'rgba(255, 255, 255, 0.2)',
         }
       : {
-          bg: '#f5f5f5',
+          bg: '#ffffff',
           bgSecondary: '#ffffff',
           text: '#000000',
-          textSecondary: '#4a4a4a',
+          textSecondary: '#000000',
           navBg: 'rgba(0, 0, 0, 0.05)',
-          cardBg: 'rgba(0, 0, 0, 0.02)',
+          cardBg: '#ffffff',
           accent: '#0066cc',
           accentHover: '#0052a3',
           border: 'rgba(0, 0, 0, 0.1)',

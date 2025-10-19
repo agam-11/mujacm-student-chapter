@@ -1,21 +1,54 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export default function ThreeGlobe({ isDark = true }) {
-  const containerRef = useRef(null);
-  const sceneRef = useRef(null);
-  const rendererRef = useRef(null);
-  const globeRef = useRef(null);
-  const starsRef = useRef(null);
-  const raysRef = useRef(null);
-  const rocketsRef = useRef(null);
-  const mouseX = useRef(0);
-  const mouseY = useRef(0);
-  const cameraRef = useRef(null);
-  const animationIdRef = useRef(null);
+type Colors = {
+  bg: number;
+  globe: number;
+  star: number;
+  ray: number;
+  rocketBody: number;
+  rocketFlame: number;
+};
+
+export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const globeRef = useRef<THREE.Mesh | null>(null);
+  const starsRef = useRef<{
+    geometry: THREE.BufferGeometry;
+    material: THREE.PointsMaterial;
+    stars: THREE.Points;
+    positions: Float32Array;
+    velocities: Float32Array;
+    starCount: number;
+  } | null>(null);
+  const raysRef = useRef<{
+    rayGroup: THREE.Group;
+    rays: Array<{ line: THREE.Line; phi: number; theta: number; geometry: THREE.BufferGeometry }>;
+  } | null>(null);
+  const rocketsRef = useRef<{
+    rockets: Array<{
+      mesh: THREE.Object3D;
+      x: number;
+      y: number;
+      z: number;
+      velX: number;
+      velY: number;
+      velZ: number;
+      lifetime: number;
+      maxLifetime: number;
+    }>;
+    createRocket: () => void;
+    scene: THREE.Scene;
+  } | null>(null);
+  const mouseX = useRef<number>(0);
+  const mouseY = useRef<number>(0);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const animationIdRef = useRef<number | null>(null);
 
   // Color scheme based on theme
-  const getColors = (dark) => dark
+  const getColors = (dark: boolean): Colors => dark
     ? {
         bg: 0x110053,
         globe: 0x1f00a9,
@@ -25,12 +58,13 @@ export default function ThreeGlobe({ isDark = true }) {
         rocketFlame: 0xffaa00,
       }
     : {
-        bg: 0xf5f5f5,
-        globe: 0x6666cc,
-        star: 0x333333,
-        ray: 0x0066cc,
-        rocketBody: 0xff6600,
-        rocketFlame: 0xffaa00,
+        // Light theme: pure white background, black/gray elements for high contrast
+        bg: 0xffffff,
+        globe: 0x000000,
+        star: 0x000000,
+        ray: 0x000000,
+        rocketBody: 0x000000,
+        rocketFlame: 0x000000,
       };
 
   useEffect(() => {
@@ -82,10 +116,12 @@ export default function ThreeGlobe({ isDark = true }) {
     renderer.domElement.style.pointerEvents = 'auto';
     
     // Clear previous renderer if exists
-    if (containerRef.current.firstChild) {
-      containerRef.current.removeChild(containerRef.current.firstChild);
+    if (containerRef.current) {
+      if (containerRef.current.firstChild) {
+        containerRef.current.removeChild(containerRef.current.firstChild as Node);
+      }
+      containerRef.current.appendChild(renderer.domElement);
     }
-    containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     console.log("ThreeGlobe: Renderer created and added to DOM");
@@ -103,7 +139,7 @@ export default function ThreeGlobe({ isDark = true }) {
     globeRef.current = globe;
 
     // Add stars/particles
-    const starGeometry = new THREE.BufferGeometry();
+  const starGeometry = new THREE.BufferGeometry();
     const positions = new Float32Array(starCount * 3);
     const velocities = new Float32Array(starCount * 3);
 
@@ -126,7 +162,7 @@ export default function ThreeGlobe({ isDark = true }) {
     });
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
-    starsRef.current = { geometry: starGeometry, material: starMaterial, stars, positions, velocities };
+    starsRef.current = { geometry: starGeometry, material: starMaterial, stars, positions, velocities, starCount };
 
     // Create rays emanating from globe
     const rays = [];
@@ -173,7 +209,17 @@ export default function ThreeGlobe({ isDark = true }) {
     raysRef.current = { rayGroup, rays };
 
     // Create random rockets/UFOs
-    const rockets = [];
+    const rockets: Array<{
+      mesh: THREE.Object3D;
+      x: number;
+      y: number;
+      z: number;
+      velX: number;
+      velY: number;
+      velZ: number;
+      lifetime: number;
+      maxLifetime: number;
+    }> = [];
 
     const createRocket = () => {
       const startX = (Math.random() - 0.5) * 20;
@@ -184,7 +230,7 @@ export default function ThreeGlobe({ isDark = true }) {
       const velY = (Math.random() - 0.5) * 0.015;
       const velZ = (Math.random() - 0.5) * 0.015;
 
-      const rocketGroup = new THREE.Group();
+  const rocketGroup = new THREE.Group();
 
       const coneGeometry = new THREE.ConeGeometry(0.05, 0.2, 8);
       const rocketMaterial = new THREE.MeshBasicMaterial({ color: colors.rocketBody });
@@ -216,10 +262,10 @@ export default function ThreeGlobe({ isDark = true }) {
     for (let i = 0; i < rocketCount; i++) {
       createRocket();
     }
-    rocketsRef.current = { rockets, createRocket, scene };
+  rocketsRef.current = { rockets, createRocket, scene };
 
     // Mouse move event
-    const handleMouseMove = (event) => {
+    const handleMouseMove = (event: MouseEvent) => {
       mouseX.current = (event.clientX / window.innerWidth) * 2 - 1;
       mouseY.current = -(event.clientY / window.innerHeight) * 2 + 1;
     };
@@ -255,16 +301,16 @@ export default function ThreeGlobe({ isDark = true }) {
 
       // Update stars
       if (starsRef.current) {
-        const { geometry, positions, velocities, starCount: count } = starsRef.current;
-        const posAttr = geometry.getAttribute('position');
+        const { geometry: sGeometry, positions: sPositions, velocities: sVelocities, starCount: count } = starsRef.current;
+        const posAttr = sGeometry.getAttribute('position');
         for (let i = 0; i < count * 3; i += 3) {
-          positions[i] += velocities[i];
-          positions[i + 1] += velocities[i + 1];
-          positions[i + 2] += velocities[i + 2];
+          sPositions[i] += sVelocities[i];
+          sPositions[i + 1] += sVelocities[i + 1];
+          sPositions[i + 2] += sVelocities[i + 2];
 
           for (let j = 0; j < 3; j++) {
-            if (positions[i + j] > 20) positions[i + j] = -20;
-            if (positions[i + j] < -20) positions[i + j] = 20;
+            if (sPositions[i + j] > 20) sPositions[i + j] = -20;
+            if (sPositions[i + j] < -20) sPositions[i + j] = 20;
           }
         }
         posAttr.needsUpdate = true;
@@ -285,9 +331,9 @@ export default function ThreeGlobe({ isDark = true }) {
           rocket.x += rocket.velX;
           rocket.y += rocket.velY;
           rocket.z += rocket.velZ;
-          rocket.mesh.position.set(rocket.x, rocket.y, rocket.z);
+          (rocket.mesh as any).position.set(rocket.x, rocket.y, rocket.z);
 
-          rocket.mesh.lookAt(
+          (rocket.mesh as any).lookAt(
             rocket.x + rocket.velX,
             rocket.y + rocket.velY,
             rocket.z + rocket.velZ
@@ -295,8 +341,8 @@ export default function ThreeGlobe({ isDark = true }) {
 
           if (rocket.lifetime > rocket.maxLifetime || Math.abs(rocket.x) > 25 || Math.abs(rocket.y) > 25 || Math.abs(rocket.z) > 25) {
             scene.remove(rocket.mesh);
-            rocket.mesh.geometry?.dispose();
-            rocket.mesh.material?.dispose();
+            try { (rocket.mesh as any).geometry?.dispose(); } catch {}
+            try { (rocket.mesh as any).material?.dispose(); } catch {}
             rockets.splice(index, 1);
             createRocket();
           }
@@ -318,14 +364,14 @@ export default function ThreeGlobe({ isDark = true }) {
       renderer.domElement.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
-      if (animationIdRef.current) {
+      if (animationIdRef.current !== null) {
         cancelAnimationFrame(animationIdRef.current);
       }
       if (containerRef.current && renderer.domElement.parentNode === containerRef.current) {
         containerRef.current.removeChild(renderer.domElement);
       }
-      geometry.dispose();
-      material.dispose();
+      try { geometry.dispose(); } catch {}
+      try { (material as any).dispose(); } catch {}
     };
   }, [isDark]);
 
