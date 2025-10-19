@@ -49,9 +49,9 @@ const TeamSection = () => {
           Meet Our Team
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 place-items-stretch">
           {teamMembers.map((member, index) => (
-            <div key={member.name} ref={(el) => { cardsRef.current[index] = el; return; }}>
+            <div key={member.name} className="h-full w-full" ref={(el) => { cardsRef.current[index] = el; return; }}>
               <ProfileCard
                 name={member.name}
                 title={member.role}

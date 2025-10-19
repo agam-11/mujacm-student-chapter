@@ -162,7 +162,7 @@ export default function ProfileCard({
   return (
     <div
       ref={cardRef}
-      className="profile-card-3d relative w-96 h-[520px] rounded-3xl overflow-hidden shadow-2xl"
+      className="profile-card-3d relative w-full h-full max-w-[360px] sm:max-w-none min-h-[360px] sm:min-h-[460px] md:min-h-[520px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mx-auto"
       style={{
         background: theme?.isDark
           ? 'linear-gradient(135deg, #0b1020 0%, #111427 50%, #1a0a2e 100%)'
@@ -190,28 +190,28 @@ export default function ProfileCard({
       />
 
       {/* Content wrapper */}
-      <div className="relative z-20 h-full flex flex-col items-center justify-between p-6">
+      <div className="relative z-20 h-full flex flex-col items-center justify-between p-4 md:p-6">
         {/* Top section: Name and title */}
         <div className="text-center pt-2">
-          <h2 className="text-3xl md:text-4xl font-black tracking-tight" style={{ color: theme?.colors?.text }}>
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight" style={{ color: theme?.colors?.text }}>
             {name}
           </h2>
           {title && (
-            <p className="mt-2 text-sm md:text-base font-medium" style={{ color: theme?.colors?.textSecondary }}>
+            <p className="mt-1 text-xs md:text-base font-medium" style={{ color: theme?.colors?.textSecondary }}>
               {title}
             </p>
           )}
         </div>
 
-        {/* Middle: Full-body avatar */}
+        {/* Middle: Full-body avatar (PNG-friendly, uncropped) */}
         <div className="relative flex-1 flex items-center justify-center w-full">
           <img
             src={avatarUrl}
             alt={name}
             loading="lazy"
-            className="h-full object-contain max-h-64"
+            className="object-contain max-h-[220px] sm:max-h-[320px] w-auto"
             style={{
-              filter: theme?.isDark ? 'drop-shadow(0 0 20px rgba(6, 182, 212, 0.4))' : 'drop-shadow(0 0 20px rgba(0, 102, 204, 0.2))',
+              filter: theme?.isDark ? 'drop-shadow(0 0 28px rgba(6, 182, 212, 0.45))' : 'drop-shadow(0 0 20px rgba(0, 102, 204, 0.2))',
             }}
           />
         </div>
@@ -219,7 +219,7 @@ export default function ProfileCard({
         {/* Bottom: Glass bar with info and button */}
         {showUserInfo && (
         <div
-          className="w-full rounded-2xl px-4 py-3 md:px-5 md:py-4 flex items-center justify-between gap-3"
+          className="w-full rounded-xl md:rounded-2xl px-3 py-2 md:px-5 md:py-4 flex items-center justify-between gap-3"
           style={{
             background: theme?.isDark
               ? 'linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))'
@@ -236,7 +236,7 @@ export default function ProfileCard({
               src={avatarUrl}
               alt={name}
               loading="lazy"
-              className="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover flex-shrink-0 border-2"
               style={{ borderColor: theme?.colors?.accent }}
             />
             <div className="min-w-0">

@@ -16,38 +16,38 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <main className="relative flex flex-col items-center justify-center min-h-screen text-center px-4" style={{ color: theme?.colors?.text }}>
-        <div className="max-w-4xl">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
-            MUJ ACM STUDENT CHAPTER
+        <div className="max-w-6xl mx-auto text-center px-4">
+          {/* Floating Animated Logo */}
+          <div className="mb-12 md:mb-16">
+            <img
+              src="/acm.png"
+              alt="MUJ ACM Logo"
+              className="w-44 h-44 md:w-60 md:h-60 mx-auto object-contain animate-float-slow"
+              style={{
+                filter: theme?.isDark 
+                  ? 'drop-shadow(0 0 40px rgba(0, 255, 255, 0.5))' 
+                  : 'drop-shadow(0 0 25px rgba(0, 102, 204, 0.4))',
+              }}
+            />
+          </div>
+
+          {/* Large Cyan Heading - Single Line */}
+          <h1 
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-6 leading-none"
+            style={{ color: theme?.colors?.accent }}
+          >
+            WE ARE MUJ ACM STUDENT CHAPTER
           </h1>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3" style={{ color: theme?.colors?.textSecondary }}>
-            Building the next generation of innovators
-          </h2>
-          <p className="text-base sm:text-lg md:text-xl mb-10" style={{ color: theme?.colors?.textSecondary }}>
-            empowering students in technology, research and innovation
+
+          {/* Descriptive Paragraph */}
+          <p 
+            className="text-xs sm:text-sm md:text-base leading-relaxed mb-10 max-w-2xl mx-auto"
+            style={{ color: theme?.colors?.textSecondary }}
+          >
+            A dynamic community of tech enthusiasts driven by passion to explore computing. We nurture talent, promote learning, and foster innovation through collaborative projects and industry engagement.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button 
-              className="w-full sm:w-auto font-semibold py-3 px-8 rounded-full shadow-lg hover:opacity-90 transform hover:scale-105 transition-all duration-300 ease-in-out"
-              style={{ 
-                backgroundColor: theme?.isDark ? '#ffffff' : '#000000',
-                color: theme?.isDark ? '#0066cc' : '#ffffff'
-              }}
-            >
-              Join ACM
-            </button>
-            <button 
-              className="w-full sm:w-auto border-2 font-semibold py-3 px-8 rounded-full transform hover:scale-105 transition-all duration-300 ease-in-out"
-              style={{ 
-                borderColor: theme?.colors?.text,
-                color: theme?.colors?.text,
-                backgroundColor: theme?.isDark ? 'transparent' : 'rgba(0, 0, 0, 0.05)'
-              }}
-            >
-              Upcoming Events
-            </button>
-          </div>
+          {/* Buttons removed as per request */}
         </div>
       </main>
       {/* What We Do section - kept on the landing page */}
