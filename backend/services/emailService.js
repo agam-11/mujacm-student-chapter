@@ -37,7 +37,14 @@ const buildTransportOptions = () => {
   };
 };
 
-const transporter = nodemailer.createTransport(buildTransportOptions());
+// Create transporter lazily to avoid eager connection attempts during module import
+let transporter = null;
+const getTransporter = () => {
+  if (transporter) return transporter;
+  const opts = buildTransportOptions();
+  transporter = nodemailer.createTransport(opts);
+  return transporter;
+};
 
 /**
  * Send email via SMTP
@@ -58,7 +65,7 @@ export const sendEmail = async (options) => {
       text: options.text,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+  const info = await getTransporter().sendMail(mailOptions);
     console.log('✓ Email sent:', info.response || info.messageId || '(no response)');
     return info;
   } catch (error) {
@@ -72,7 +79,13 @@ export const sendEmail = async (options) => {
  */
 export const verifyEmailConfig = async () => {
   try {
-    await transporter.verify();
+    // If no explicit SMTP configuration is provided, short-circuit and report not-ready
+    if (!process.env.SMTP_HOST && !process.env.SMTP_SERVICE && !process.env.SMTP_EMAIL) {
+      console.warn('⚠️ No SMTP configuration found (SMTP_HOST, SMTP_SERVICE or SMTP_EMAIL). Skipping verification.');
+      return false;
+    }
+
+    await getTransporter().verify();
     console.log('✓ Email service ready');
     return true;
   } catch (error) {
