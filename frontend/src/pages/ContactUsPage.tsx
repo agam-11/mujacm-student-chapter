@@ -141,7 +141,7 @@ export default function ContactUsPage() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-300 backdrop-blur-sm"
-                    placeholder="John Doe"
+                    placeholder="Your Name"
                     style={{ WebkitTextFillColor: 'white' }}
                   />
                 </div>
@@ -157,7 +157,7 @@ export default function ContactUsPage() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-300 backdrop-blur-sm"
-                    placeholder="john@example.com"
+                    placeholder="email@example.com"
                     style={{ WebkitTextFillColor: 'white' }}
                   />
                 </div>
