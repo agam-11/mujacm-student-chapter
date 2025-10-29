@@ -12,12 +12,16 @@ type Member = {
 };
 
 const teamMembers: Member[] = [
-  { name: "Riya Sharma", role: "President", img: "/42.png" },
-  { name: "Aditya Mehta", role: "Lead Developer", img: "/42.png" },
-  { name: "Priya Verma", role: "Design Head", img: "/42.png" },
-  { name: "Karan Patel", role: "Event Coordinator", img: "/42.png" },
-  { name: "Neha Gupta", role: "Marketing Lead", img: "/42.png" },
-  { name: "Arjun Singh", role: "Tech Advisor", img: "/42.png" },
+  { name: "Agam \n Bhasin", role: "Chairperson", img: "/agambhasin.png" },
+  {
+    name: "Prakhar S.",
+    role: "Vice-chairperson",
+    img: "/agambhasin.png",
+  },
+  { name: "Rohit Nalawade", role: "Treasurer", img: "/public/rohit.png" },
+  { name: "Sukrit Sinha", role: "Secretary", img: "/42.png" },
+  { name: "Naman Verma", role: "Creative Director", img: "/naman.png" },
+  { name: "Varun Singh N.", role: "Technical Secretary", img: "/varun.png" },
 ];
 
 const TeamSection = () => {
@@ -32,7 +36,14 @@ const TeamSection = () => {
       const cards = cardsRef.current.filter(Boolean) as HTMLElement[];
 
       gsap.set(cards, { opacity: 0, y: 24, scale: 0.98 });
-      gsap.to(cards, { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.12, ease: 'power2.out' });
+      gsap.to(cards, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.7,
+        stagger: 0.12,
+        ease: "power2.out",
+      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -45,17 +56,28 @@ const TeamSection = () => {
       aria-labelledby="team-heading"
     >
       <div className="max-w-6xl mx-auto px-4">
-        <h2 id="team-heading" className="text-3xl md:text-4xl font-bold mb-8" style={{ color: theme?.colors?.accent }}>
+        <h2
+          id="team-heading"
+          className="text-3xl md:text-4xl font-bold mb-8"
+          style={{ color: theme?.colors?.accent }}
+        >
           Meet Our Team
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 place-items-stretch">
           {teamMembers.map((member, index) => (
-            <div key={member.name} className="h-full w-full" ref={(el) => { cardsRef.current[index] = el; return; }}>
+            <div
+              key={member.name}
+              className="h-full w-full"
+              ref={(el) => {
+                cardsRef.current[index] = el;
+                return;
+              }}
+            >
               <ProfileCard
                 name={member.name}
                 title={member.role}
-                handle={member.name.split(' ')[0].toLowerCase()}
+                handle={member.name.split(" ")[0].toLowerCase()}
                 status="Online"
                 contactText="Contact Me"
                 avatarUrl={member.img}
