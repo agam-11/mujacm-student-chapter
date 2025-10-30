@@ -11,6 +11,8 @@ import MobileMenu from "./components/MobileMenu";
 import ThemeContext from "./context/ThemeContext";
 import ThreeGlobe from "./components/ThreeGlobe";
 import TeamSection from "./pages/TeamPage";
+import GalleryPage from "./pages/GalleryPage";
+import EventsPage from "./pages/EventsPage";
 
 interface Section {
   id: string;
@@ -38,8 +40,8 @@ const AppContent = () => {
     { id: "home", label: "Home", component: <HomePage /> },
     { id: "about", label: "About Us", component: <AboutUsPage /> },
     { id: "team", label: "Team", component: <TeamSection /> },
-    { id: "events", label: "Events" },
-    { id: "gallery", label: "Gallery" },
+    { id: "events", label: "Events", component: <EventsPage /> },
+    { id: "gallery", label: "Gallery", component: <GalleryPage /> },
     { id: "projects", label: "Projects", component: <ProjectsPage /> },
     { id: "blogs", label: "Blogs", component: <BlogsPage /> },
     { id: "contact", label: "Contact Us", component: <ContactUsPage /> },

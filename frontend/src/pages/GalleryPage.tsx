@@ -1,87 +1,155 @@
 import React, { useEffect, useState } from "react";
 
-const images = [
-  "/public/bg.jpeg",
-  "/public/acm.png",
-  "/public/42.png",
-  "/public/acmblue.png",
-  "/public/images (1).png",
-  "/public/download.png",
-  "/public/bg.png",
-  "/public/vite.svg",
+// Gallery images sourced from the public/Gallery folder.
+// Note: browsers may not display HEIC; we filter to common web-friendly formats.
+const galleryFiles = [
+  "/Gallery/DSC07003.jpg",
+  "/Gallery/MVI_0057.00_00_22_44.Still003-2.jpg",
+  "/Gallery/IMG_2218.jpg",
+  "/Gallery/IMG_2226.jpg",
+  "/Gallery/IMG_8639.jpg",
+  "/Gallery/DSC06812.jpg",
+  "/Gallery/DSC06724.jpg",
+  "/Gallery/DSC06711.jpg",
+  "/Gallery/20240926_222034.jpg",
+  "/Gallery/IMG20241117150206.jpg",
+  "/Gallery/DSC06854.jpg",
+  "/Gallery/DSC06674.jpg",
+  "/Gallery/DSC07005.jpg",
+  "/Gallery/DSC_0092-Enhanced-NR.jpg",
+  "/Gallery/IMG_2562.JPG",
+  "/Gallery/IMG_0297.jpg",
 ];
 
-const collageImages = [
-  ...images,
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-];
+// Keep only common web formats (jpg/jpeg/png/gif/webp) — HEIC files are skipped to avoid display issues
+const webImages = galleryFiles.filter((f) => /\.(jpe?g|png|gif|webp)$/i.test(f));
 
-const breathingImages = collageImages.slice(0, 20);
+// Shuffle helper
+function shuffle<T>(arr: T[]) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+// Shuffle and select up to 20 images. We'll display a 4-column grid (4x4 or 4x5 depending on available images).
+const shuffledImages = shuffle(webImages);
+const MAX_IMAGES = 20; // prefer up to 20 (4x5), will fall back to available count
+
+// Compute breathingImages once per module load (deterministic per session)
+const breathingImages = (() => shuffledImages.slice(0, Math.min(shuffledImages.length, MAX_IMAGES)))();
 
 const ResponsiveBreathingGrid: React.FC = () => {
   const [active, setActive] = useState<number | null>(null);
+  const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Pick one image to enlarge every few seconds
   useEffect(() => {
+    if (prefersReducedMotion) {
+      // No breathing motion for users who prefer reduced motion
+      setActive(null);
+      return;
+    }
+
     const changeActive = () => {
       const newIndex = Math.floor(Math.random() * breathingImages.length);
       setActive(newIndex);
     };
 
     changeActive();
-    const interval = setInterval(changeActive, 2500);
+    const intervalMs = 3500; // slower to reduce CPU
+    const interval = setInterval(changeActive, intervalMs);
     return () => clearInterval(interval);
   }, []);
+
+  // IntersectionObserver to lazy-load images (use data-src to avoid initial fetch)
+  useEffect(() => {
+    const imgs = Array.from(document.querySelectorAll<HTMLImageElement>('img[data-src]'));
+    if (!imgs.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            const dataSrc = img.getAttribute('data-src');
+            if (dataSrc) {
+              // Prioritize the active image
+              if (img.dataset.index && Number(img.dataset.index) === active) {
+                img.setAttribute('fetchpriority', 'high');
+              } else {
+                img.setAttribute('fetchpriority', 'low');
+              }
+              img.src = dataSrc;
+              img.removeAttribute('data-src');
+              // allow browser to decode async
+              img.decoding = 'async';
+            }
+            io.unobserve(img);
+          }
+        });
+      },
+      { rootMargin: '200px 0px' }
+    );
+
+    imgs.forEach((i) => io.observe(i));
+    return () => io.disconnect();
+  }, [active]);
+
+  // Determine how many images to render to create a 4-column layout
+  const cols = 4;
+  const maxToShow = Math.min(breathingImages.length, cols * 5); // up to 4x5
+  const imagesToShow = breathingImages.slice(0, maxToShow);
 
   return (
     <div className="max-w-screen-lg mx-auto p-6">
       <div
-        className="grid gap-3 md:gap-4 transition-all duration-700 ease-in-out"
-        style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
-          gridAutoRows: "minmax(130px, 1fr)",
-        }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 transition-all duration-700 ease-in-out auto-rows-[180px] md:auto-rows-[220px] lg:auto-rows-[260px]"
       >
-        {breathingImages.map((src, i) => {
+        {imagesToShow.map((src, i) => {
           const isActive = i === active;
+
+          // Use transform scale rather than changing grid spans to avoid layout reflow
+          const transform = isActive ? "scale(1.08) translateY(-8px)" : "scale(1) translateY(0)";
+          const shadow = isActive
+            ? "0 18px 40px rgba(56,189,248,0.18), 0 10px 30px rgba(2,6,23,0.6)"
+            : "0 0 0 rgba(0,0,0,0)";
 
           return (
             <div
               key={i}
-              className={`relative rounded-xl overflow-hidden bg-slate-800 flex items-center justify-center transition-all duration-[2200ms] ease-[cubic-bezier(.25,.8,.25,1)] ${
+              className={`relative rounded-xl overflow-hidden bg-slate-800 flex items-center justify-center will-change-transform transform-gpu transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] ${
                 isActive ? "z-20" : "z-10"
               }`}
               style={{
                 transformOrigin: "center",
-
-                gridColumn: isActive ? "span 2" : undefined,
-                gridRow: isActive ? "span 2" : undefined,
-                transitionDelay: isActive ? "0s" : "0.2s",
-                transitionTimingFunction: isActive
-                  ? "cubic-bezier(.22,1,.36,1)"
-                  : "cubic-bezier(.25,.8,.25,1)", // slower ease-out for shrinking
-                transform: isActive
-                  ? "scale(1.06) translateY(-4px)"
-                  : "scale(0.98) translateY(0)",
-                boxShadow: isActive
-                  ? "0 0 25px rgba(56,189,248,0.3), 0 0 50px rgba(56,189,248,0.15)"
-                  : "0 0 0 rgba(0,0,0,0)",
+                transitionDelay: isActive ? "0s" : "0s",
+                transform,
+                boxShadow: shadow,
+                minHeight: 160,
               }}
             >
+              {/* Use a tiny placeholder src and store the real src in data-src; IntersectionObserver will swap it in */}
               <img
-                src={src}
-                alt={`Image ${i}`}
-                className="object-cover w-full h-full min-h-[120px] min-w-[120px] select-none pointer-events-none transition-transform duration-[1600ms] ease-[cubic-bezier(.22,1,.36,1)]"
+                data-src={src}
+                data-index={String(i)}
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+                alt={`Gallery image ${i + 1}`}
+                className="object-cover w-full h-full select-none pointer-events-auto"
                 draggable={false}
+                onError={(e) => {
+                  // If an image fails to load, hide it gracefully
+                  const el = e.currentTarget as HTMLImageElement;
+                  el.style.display = "none";
+                }}
               />
+              {/* subtle caption on hover */}
+              <div className="absolute inset-0 flex items-end p-3 pointer-events-none">
+                <div className="w-full bg-gradient-to-t from-black/50 to-transparent text-white text-sm rounded-md p-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                  Photo
+                </div>
+              </div>
             </div>
           );
         })}
@@ -92,13 +160,10 @@ const ResponsiveBreathingGrid: React.FC = () => {
 
 const GalleryPage: React.FC = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#0f172a] to-[#172554] py-16">
-      <h1 className="text-4xl md:text-5xl font-extrabold text-cyan-400 mb-10 tracking-tight text-center">
-        Gallery
+    <div className="w-full min-h-screen flex flex-col items-center justify-center py-16">
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-10 tracking-tight text-center">
+        Life at MUJ ACM
       </h1>
-      <p className="mb-8 text-cyan-200/80 text-center max-w-xl">
-        A glimpse of life at MUJ ACM.
-      </p>
       <ResponsiveBreathingGrid />
     </div>
   );

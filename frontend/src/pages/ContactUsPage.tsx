@@ -1,5 +1,3 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-
 // Contact Info Card Props interface
 interface ContactInfoCardProps {
   icon: string;
@@ -23,61 +21,14 @@ const ContactInfoCard: React.FC<ContactInfoCardProps> = ({ icon, title, info, li
   </div>
 );
 
-// Form data interface
-interface FormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
-
 // Main Contact Us Page Component
 export default function ContactUsPage() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState<string>('');
-
-  const API_BASE = (import.meta as any).env.VITE_API_BASE || 'http://localhost:5000';
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus('sending');
-    setErrorMsg('');
-
-    try {
-      const res = await fetch(`${API_BASE}/api/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || data.message || 'Submission failed');
-      }
-
-      setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      // reset to idle after a short delay
-      setTimeout(() => setStatus('idle'), 4000);
-    } catch (err) {
-      setStatus('error');
-      setErrorMsg(err instanceof Error ? err.message : 'Network error');
-      console.error('Contact submit error:', err);
-    }
-  };
+  // WhatsApp number (replace with your organization's WhatsApp number in format: countrycode+phonenumber, e.g., 919876543210)
+  const WHATSAPP_NUMBER = "919999999999"; // Example: India +91 format
+  const WHATSAPP_MESSAGE = encodeURIComponent(
+    "Hi! I'd like to connect with MUJ ACM. Can you help me?"
+  );
+  const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
   return (
   <div className="relative min-h-screen w-full font-sans text-white">
@@ -124,92 +75,26 @@ export default function ContactUsPage() {
             />
           </div>
 
-          {/* Contact Form */}
+          {/* WhatsApp Chat Section */}
           <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-12 shadow-2xl border border-white/20">
-            <h2 className="text-3xl font-bold mb-6 text-center text-white">Send us a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-semibold mb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-300 backdrop-blur-sm"
-                    placeholder="Your Name"
-                    style={{ WebkitTextFillColor: 'white' }}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-semibold mb-2">
-                    Your Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-300 backdrop-blur-sm"
-                    placeholder="email@example.com"
-                    style={{ WebkitTextFillColor: 'white' }}
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-semibold mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-300 backdrop-blur-sm"
-                  placeholder="What's this about?"
-                  style={{ WebkitTextFillColor: 'white' }}
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-semibold mb-2">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-300 resize-none backdrop-blur-sm"
-                  placeholder="Tell us more..."
-                  style={{ WebkitTextFillColor: 'white' }}
-                ></textarea>
-              </div>
-              {status === 'error' && (
-                <div className="text-center text-red-400 mb-3">Error: {errorMsg}</div>
-              )}
-              {status === 'success' && (
-                <div className="text-center text-green-400 mb-3">✓ Message sent! Check your email.</div>
-              )}
-              <div className="text-center">
-                <button
-                  type="submit"
-                  disabled={status === 'sending'}
-                  className={`bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out ${status === 'sending' ? 'opacity-60 cursor-not-allowed' : ''}`}
-                >
-                  {status === 'sending' ? 'Sending...' : 'Send Message'}
-                </button>
-              </div>
-            </form>
+            <h2 className="text-3xl font-bold mb-6 text-center text-white">Chat With Us on WhatsApp</h2>
+            <div className="text-center space-y-6">
+              <div className="text-6xl">💬</div>
+              <p className="text-lg text-gray-200 mb-4">
+                Have a question, complaint, or want to learn more about MUJ ACM? Connect with us instantly on WhatsApp!
+              </p>
+              <p className="text-sm text-gray-300 mb-6">
+                We're here to help and typically respond within a few hours.
+              </p>
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out text-lg"
+              >
+                💬 Start WhatsApp Chat
+              </a>
+            </div>
           </div>
 
           {/* Social Media Section */}

@@ -21,7 +21,7 @@ const teamMembers: Member[] = [
   { name: "Rohit Nalawade", role: "Treasurer", img: "/public/rohit.png" },
   { name: "Sukrit Sinha", role: "Secretary", img: "/42.png" },
   { name: "Naman Verma", role: "Creative Director", img: "/naman.png" },
-  { name: "Varun Singh N.", role: "Technical Secretary", img: "/varun.png" },
+  { name: "Varun Narayan Jain", role: "Technical Secretary", img: "/varun.png" },
 ];
 
 const TeamSection = () => {
