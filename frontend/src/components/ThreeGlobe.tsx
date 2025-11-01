@@ -47,6 +47,11 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const cameraZTargetRef = useRef<number>(2);
   const animationIdRef = useRef<number | null>(null);
+  
+  // Touch interaction state
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const isTouching = useRef<boolean>(false);
 
   // Color scheme based on theme
   const getColors = (dark: boolean): Colors => dark
@@ -107,12 +112,13 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
+      antialias: !isMobile, // Disable antialiasing on mobile for better performance
       alpha: true,
-      preserveDrawingBuffer: true
+      powerPreference: 'high-performance', // Request high-performance GPU
+      preserveDrawingBuffer: false // Better performance
     });
   renderer.setSize(vw, vh);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio for performance
     renderer.setClearColor(colors.bg, 1);
     renderer.domElement.style.position = 'fixed';
     renderer.domElement.style.top = '0';
@@ -120,7 +126,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.zIndex = '-1';
-    renderer.domElement.style.pointerEvents = 'auto';
+    renderer.domElement.style.pointerEvents = 'none';
     
     // Clear previous renderer if exists
     if (containerRef.current) {
@@ -280,7 +286,42 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Handle window / visualViewport resize: only update renderer size and globe scale.
+    // Touch event handlers for mobile interactivity - use window for better performance
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length === 1) {
+        isTouching.current = true;
+        touchStartX.current = event.touches[0].clientX;
+        touchStartY.current = event.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (event.touches.length === 1 && isTouching.current) {
+        const touch = event.touches[0];
+        
+        // Use requestAnimationFrame to throttle updates and prevent lag
+        requestAnimationFrame(() => {
+          // Update mouse position for camera parallax (moving the whole scene view)
+          mouseX.current = (touch.clientX / window.innerWidth) * 2 - 1;
+          mouseY.current = -(touch.clientY / window.innerHeight) * 2 + 1;
+        });
+        
+        // Update touch position for next move
+        touchStartX.current = touch.clientX;
+        touchStartY.current = touch.clientY;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isTouching.current = false;
+    };
+
+    // Add touch event listeners only to window for better performance
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    // Handle window / visualViewport resize: update renderer size, globe scale, and camera distance consistently
     const handleResize = () => {
       const newVw = (window as any).visualViewport ? (window as any).visualViewport.width : window.innerWidth;
       const newVh = (window as any).visualViewport ? (window as any).visualViewport.height : window.innerHeight;
@@ -289,13 +330,22 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       camera.updateProjectionMatrix();
       renderer.setSize(newVw, newVh);
 
-      // recompute globe scale but DO NOT change camera distance
+      // Recompute responsive values consistently
       const newIsMobile = newVw < 768;
       const newIsTablet = newVw >= 768 && newVw < 1024;
+      
+      // Update globe scale
       globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
       if (globeRef.current) {
         globeRef.current.scale.setScalar(globeScaleRef.current);
       }
+      
+      // Update camera distance to match scale (important for mobile!)
+      const newCameraDistance = newIsMobile ? 1.25 : newIsTablet ? 2.5 : 2;
+      cameraDistanceRef.current = newCameraDistance;
+      cameraZTargetRef.current = newCameraDistance;
+      // Smoothly move camera to new distance
+      camera.position.z = newCameraDistance;
     };
     window.addEventListener('resize', handleResize);
     if ((window as any).visualViewport) {
@@ -309,7 +359,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       animationIdRef.current = requestAnimationFrame(animate);
       frameCount++;
 
-      // Rotate globe
+      // Rotate globe (base rotation only, no touch velocity)
       if (globeRef.current) {
         globeRef.current.rotation.y += 0.0002;
         globeRef.current.rotation.x += 0.0001;
@@ -387,6 +437,9 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       console.log("ThreeGlobe: Cleaning up");
       renderer.domElement.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('resize', handleResize);
       if (animationIdRef.current !== null) {
         cancelAnimationFrame(animationIdRef.current);
@@ -409,7 +462,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
         width: '100%',
         height: '100%',
         zIndex: -1,
-        pointerEvents: 'auto',
+        pointerEvents: 'none',
       }}
     />
   );

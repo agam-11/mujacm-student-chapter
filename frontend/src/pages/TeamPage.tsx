@@ -13,12 +13,8 @@ type Member = {
 
 const teamMembers: Member[] = [
   { name: "Agam \n Bhasin", role: "Chairperson", img: "/agambhasin.png" },
-  {
-    name: "Prakhar S.",
-    role: "Vice-chairperson",
-    img: "/agambhasin.png",
-  },
-  { name: "Rohit Nalawade", role: "Treasurer", img: "/public/rohit.png" },
+  {name: "Prakhar S.",role: "Vice-chairperson",img: "/agambhasin.png",},
+  { name: "Rohit Nalawade", role: "Treasurer", img: "/rohit.png" },
   { name: "Sukrit Sinha", role: "Secretary", img: "/42.png" },
   { name: "Naman Verma", role: "Creative Director", img: "/naman.png" },
   { name: "Varun Narayan Jain", role: "Technical Secretary", img: "/varun.png" },
@@ -58,7 +54,7 @@ const TeamSection = () => {
       <div className="max-w-6xl mx-auto px-4">
         <h2
           id="team-heading"
-          className="text-3xl md:text-4xl font-bold mb-8"
+          className="text-center text-5xl md:text-6xl font-bold mb-8"
           style={{ color: theme?.colors?.accent }}
         >
           Meet Our Team
