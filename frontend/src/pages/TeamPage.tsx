@@ -13,11 +13,15 @@ type Member = {
 
 const teamMembers: Member[] = [
   { name: "Agam \n Bhasin", role: "Chairperson", img: "/agambhasin.png" },
-  {name: "Prakhar S.",role: "Vice-chairperson",img: "/agambhasin.png",},
+  { name: "Prakhar S.", role: "Vice-chairperson", img: "/prakhar.png" },
   { name: "Rohit Nalawade", role: "Treasurer", img: "/rohit.png" },
-  { name: "Sukrit Sinha", role: "Secretary", img: "/42.png" },
+  { name: "Sukrit Sinha", role: "Secretary", img: "/sukrit.png" },
   { name: "Naman Verma", role: "Creative Director", img: "/naman.png" },
-  { name: "Varun Narayan Jain", role: "Technical Secretary", img: "/varun.png" },
+  {
+    name: "Varun Narayan Jain",
+    role: "Technical Secretary",
+    img: "/varun.png",
+  },
 ];
 
 const TeamSection = () => {
