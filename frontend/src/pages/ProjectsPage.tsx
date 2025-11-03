@@ -72,54 +72,28 @@ export default function ProjectsPage() {
 
   const projects = [
     {
-      title: "AI Chatbot Assistant",
+      title: "GMC",
       description:
-        "An intelligent chatbot powered by natural language processing to assist students with common queries and provide information about ACM events and activities.",
-      tags: ["Python", "NLP", "Machine Learning"],
-      category: "AI/ML",
-      githubLink: "#",
-      liveLink: "#",
-    },
-    {
-      title: "Event Management System",
-      description:
-        "A comprehensive web application for managing club events, registrations, and attendee tracking with real-time updates and notifications.",
-      tags: ["React", "Node.js", "MongoDB"],
+        "An in-house Website to handle certificate management for various events conducted by MUJ ACM.",
+      tags: ["Web Dev", "React", "Node.js"],
       category: "Web Dev",
       githubLink: "#",
       liveLink: "#",
     },
     {
-      title: "Code Learning Platform",
+      title: "Coding Platform",
       description:
-        "An interactive platform designed to help students learn programming through gamified challenges and peer-to-peer collaboration.",
-      tags: ["JavaScript", "Firebase", "Vue.js"],
-      category: "Web Dev",
-      githubLink: "#",
-    },
-    {
-      title: "Campus Navigation App",
-      description:
-        "A mobile-friendly application that helps students navigate the campus, find classrooms, and locate important facilities with AR integration.",
-      tags: ["React Native", "AR", "Maps API"],
-      category: "Mobile",
-      githubLink: "#",
-      liveLink: "#",
-    },
-    {
-      title: "Study Group Matcher",
-      description:
-        "An algorithm-based application that matches students with similar academic interests and schedules to form effective study groups.",
+        "An online coding platform that allows users to solve coding problems, participate in contests, and improve their programming skills for the students of MUJ.",
       tags: ["Python", "Django", "PostgreSQL"],
       category: "Web Dev",
       githubLink: "#",
     },
     {
-      title: "IoT Smart Campus",
+      title: "AI Chatbot",
       description:
-        "An IoT-based system for monitoring and controlling classroom environments, including lighting, temperature, and occupancy detection.",
-      tags: ["IoT", "Arduino", "MQTT"],
-      category: "IoT",
+        "An intelligent chatbot powered by natural language processing to assist students with common queries and provide information about ACM events and activities.",
+      tags: ["Python", "NLP", "Machine Learning"],
+      category: "AI/ML",
       githubLink: "#",
       liveLink: "#",
     },
