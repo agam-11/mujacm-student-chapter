@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import ThemeContext from "../context/ThemeContext";
 
-const getCurrentDate = () => new Date("2025-10-23"); // For demo, set to Oct 23, 2025
+// const getCurrentDate = () => new Date(); // Use actual current date
 
 interface Event {
   id: string;
@@ -14,105 +14,178 @@ interface Event {
   isPast?: boolean;
 }
 
-const events: Event[] = [
+export const events: Event[] = [
   {
-    id: "ev1",
-    title: "Hackathon 24H",
-    date: "Mar 12, 2025",
-    time: "9:00 AM - 9:00 AM",
-    location: "Main Auditorium",
-    desc: "An intense 24-hour coding sprint where students build prototypes and win prizes.",
-    category: "Hackathon",
-  },
-  {
-    id: "ev2",
-    title: "TechTalks: Web3",
-    date: "Apr 02, 2025",
-    time: "3:00 PM - 5:00 PM",
-    location: "Seminar Hall A",
-    desc: "Industry speakers share practical insights on Web3 and decentralized applications.",
+    id: "1",
+    title: "Research Paper Talk",
+    date: "2024-06-14",
+    desc: "A session focused on discussing research papers and presentation skills.",
     category: "Talk",
   },
   {
-    id: "ev3",
-    title: "Design Sprint",
-    date: "May 18, 2025",
-    time: "10:00 AM - 6:00 PM",
-    location: "Design Lab",
-    desc: "A hands-on weekend workshop focused on UX, rapid prototyping and user testing.",
-    category: "Workshop",
-  },
-  {
-    id: "ev4",
-    title: "Routing & DevOps Night",
-    date: "Jun 05, 2025",
-    time: "6:00 PM - 8:00 PM",
-    location: "Tech Hub",
-    desc: "Learn how to set up CI/CD, containerize apps and deploy to the cloud.",
-    category: "Workshop",
-  },
-  {
-    id: "ev5",
-    title: "Women in Tech Panel",
-    date: "Jul 10, 2025",
-    time: "2:00 PM - 4:00 PM",
-    location: "Main Hall",
-    desc: "A panel highlighting women leaders in technology and career growth advice.",
-    category: "Networking",
-  },
-  {
-    id: "ev6",
-    title: "Open Source Day",
-    date: "Aug 21, 2025",
-    time: "11:00 AM - 5:00 PM",
-    location: "Computer Lab",
-    desc: "Pair up, pick beginner-friendly issues and get mentored by experienced contributors.",
-    category: "Workshop",
-  },
-  {
-    id: "ev7",
-    title: "AI Bootcamp",
-    date: "Nov 05, 2025",
-    time: "9:00 AM - 1:00 PM",
-    location: "ML Lab",
-    desc: "A hands-on bootcamp on AI/ML with real-world projects and expert mentors.",
-    category: "Workshop",
-  },
-  {
-    id: "ev8",
-    title: "Cybersecurity Workshop",
-    date: "Nov 20, 2025",
-    time: "4:00 PM - 6:00 PM",
-    location: "Security Lab",
-    desc: "Learn the latest in ethical hacking, network security, and defense strategies.",
-    category: "Workshop",
-  },
-  {
-    id: "ev9",
-    title: "Winter CodeFest",
-    date: "Dec 10, 2025",
-    time: "10:00 AM - 8:00 PM",
-    location: "Main Campus",
-    desc: "A festive coding marathon with prizes, snacks, and fun challenges.",
+    id: "2",
+    title: "Code Carosal",
+    date: "2024-08-29",
+    desc: "Coding event with multiple programming challenges.",
     category: "Competition",
   },
   {
-    id: "ev10",
-    title: "New Year Tech Gala",
-    date: "Jan 15, 2026",
-    time: "6:00 PM - 10:00 PM",
-    location: "Banquet Hall",
-    desc: "Kick off the new year with tech talks, networking, and celebration!",
+    id: "3",
+    title: "ELICIT",
+    date: "2024-09-27",
+    desc: "Annual tech fest featuring multiple technical and creative events.",
+    category: "Hackathon",
+  },
+  {
+    id: "4",
+    title: "IF CODES WERE SONGS",
+    date: "2024-09-28",
+    desc: "A creative coding competition with a musical theme.",
+    category: "Competition",
+  },
+  {
+    id: "5",
+    title: "Hacks 9.0",
+    date: "2024-09-28",
+    desc: "Flagship hackathon bringing together innovators and coders.",
+    category: "Hackathon",
+  },
+  {
+    id: "6",
+    title: "Games Asylum",
+    date: "2024-09-28",
+    desc: "Gaming competition event for enthusiasts.",
+    category: "Competition",
+  },
+  {
+    id: "7",
+    title: "Robo Soccer",
+    date: "2024-09-28",
+    desc: "Robotics competition featuring soccer-playing bots.",
+    category: "Competition",
+  },
+  {
+    id: "8",
+    title: "Hack The Box",
+    date: "2024-09-28",
+    desc: "Cybersecurity and ethical hacking challenge.",
+    category: "Hackathon",
+  },
+  {
+    id: "9",
+    title: "Kagglethon",
+    date: "2024-09-28",
+    desc: "Machine learning and data science competition.",
+    category: "Competition",
+  },
+  {
+    id: "10",
+    title: "SwapBoard",
+    date: "2024-09-28",
+    desc: "Interactive coding and idea exchange event.",
     category: "Networking",
   },
+  {
+    id: "11",
+    title: "Drone Show",
+    date: "2024-09-29",
+    desc: "Drone demonstration and aerial innovation showcase.",
+    category: "Competition",
+  },
+  {
+    id: "12",
+    title: "Degree in a Day",
+    date: "2024-09-29",
+    desc: "Fast-paced technical learning challenge.",
+    category: "Workshop",
+  },
+  {
+    id: "13",
+    title: "Tech Quiz",
+    date: "2024-11-08",
+    desc: "Multi-day technology quiz competition.",
+    category: "Competition",
+  },
+  {
+    id: "14",
+    title: "Tech Summit Centrail",
+    date: "2024-11-15",
+    desc: "Major technical conference and innovation showcase.",
+    category: "Talk",
+  },
+  {
+    id: "15",
+    title: "Tech To Rescue",
+    date: "2024-11-24",
+    desc: "Event focused on using technology for social impact.",
+    category: "Talk",
+  },
+  {
+    id: "16",
+    title: "Animation Workshop",
+    date: "2024-12-15",
+    desc: "Online creative animation learning session.",
+    category: "Workshop",
+  },
+  {
+    id: "17",
+    title: "Digital Art / Animation Competition",
+    date: "2024-12-27",
+    desc: "Competition showcasing digital art and animation skills.",
+    category: "Competition",
+  },
+  {
+    id: "18",
+    title: "Capture the Flag",
+    date: "2025-01-18",
+    desc: "Cybersecurity-based problem-solving competition.",
+    category: "Competition",
+  },
+  {
+    id: "19",
+    title: "E-Sport Night",
+    date: "2025-02-01",
+    desc: "Evening of competitive gaming and esports.",
+    category: "Competition",
+  },
+  {
+    id: "20",
+    title: "Snap Syntax",
+    date: "2025-03-22",
+    desc: "Coding contest to test programming logic and speed.",
+    category: "Competition",
+  },
+  {
+    id: "21",
+    title: "April DevCon",
+    date: "2025-04-05",
+    desc: "Developer conference with sessions and coding challenges.",
+    category: "Workshop",
+  },
+  {
+    id: "22",
+    title: "I-CAN",
+    date: "2025-04-05",
+    desc: "Innovation and creativity networking event.",
+    category: "Networking",
+  },
+  {
+    id: "23",
+    title: "Coding Bootcamp",
+    date: "2025-04-05",
+    desc: "Hands-on coding and skill-building workshop.",
+    category: "Workshop",
+  }
 ];
 
+
+
 // Mark past/upcoming based on today
-const today = getCurrentDate();
-const eventsWithStatus = events.map((ev) => {
-  const evDate = new Date(ev.date);
-  return { ...ev, isPast: evDate < today };
-});
+// const today = getCurrentDate();
+// const eventsWithStatus = events.map((ev) => {
+//   const evDate = new Date(ev.date);
+//   return { ...ev, isPast: evDate < today };
+// });
 
 // Category badge colors
 const categoryColors: Record<Event["category"], string> = {
@@ -125,7 +198,7 @@ const categoryColors: Record<Event["category"], string> = {
 
 // Event card component
 const EventCard: React.FC<{ event: Event }> = ({ event }) => (
-  <div className="group relative rounded-2xl shadow-lg border border-white/10 bg-white/5 backdrop-blur-sm px-6 py-6 flex flex-col hover:border-cyan-400/50 transition-all duration-300 hover:shadow-cyan-500/20 hover:shadow-xl min-h-[320px]">
+  <div className="group relative rounded-2xl shadow-lg border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-4 flex flex-col hover:border-cyan-400/50 transition-all duration-300 hover:shadow-cyan-500/20 hover:shadow-xl min-h-[200px]">
     {/* Category badge */}
     <div className="absolute top-4 right-4">
       <span className={`text-xs font-bold px-3 py-1 rounded-full border ${categoryColors[event.category]}`}>
@@ -164,29 +237,24 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => (
       {event.desc}
     </p>
 
-    {/* Register button */}
-    <button className="mt-auto w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform group-hover:scale-105">
-      Register Now
-    </button>
   </div>
 );
 
 const EventsPage: React.FC = () => {
   const [filter, setFilter] = useState<Event["category"] | "all">("all");
-  const [showPast, setShowPast] = useState(false);
 
-  const upcomingEvents = eventsWithStatus.filter((ev) => !ev.isPast);
-  const pastEvents = eventsWithStatus.filter((ev) => ev.isPast);
+  const filteredEvents =
+    filter === "all"
+      ? events
+      : events.filter((ev) => ev.category === filter);
 
-  const filteredUpcoming = filter === "all" 
-    ? upcomingEvents 
-    : upcomingEvents.filter((ev) => ev.category === filter);
-
-  const filteredPast = filter === "all" 
-    ? pastEvents 
-    : pastEvents.filter((ev) => ev.category === filter);
-
-  const categories: Event["category"][] = ["Workshop", "Hackathon", "Talk", "Networking", "Competition"];
+  const categories: Event["category"][] = [
+    "Workshop",
+    "Hackathon",
+    "Talk",
+    "Networking",
+    "Competition",
+  ];
 
   // Entrance animation
   useEffect(() => {
@@ -207,17 +275,18 @@ const EventsPage: React.FC = () => {
     );
     cards.forEach((c) => io.observe(c));
     return () => io.disconnect();
-  }, [filter, showPast]);
+  }, [filter]);
 
   return (
     <section className="w-full py-20 px-4 md:px-12 lg:px-24 relative min-h-screen">
       {/* Page header */}
       <div className="text-center mb-12">
-        <h1 className="text-5xl md:text-6xl font-bold mb-4">Events</h1>
+        <h1 className="text-5xl md:text-6xl font-bold mb-4">Our Events</h1>
         <div className="glass-light inline-block px-6 py-4 rounded-lg mb-6">
-        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-          Join us for workshops, talks, hackathons, and networking events designed to level up your skills.
-        </p>
+          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+            Join us for workshops, talks, hackathons, and networking events
+            designed to level up your skills.
+          </p>
         </div>
       </div>
 
@@ -248,16 +317,15 @@ const EventsPage: React.FC = () => {
         ))}
       </div>
 
-      {/* Upcoming events */}
+      {/* All events */}
       <div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
-          Upcoming Events
-        </h2>
-        {filteredUpcoming.length === 0 ? (
-          <p className="text-center text-gray-400 py-8">No upcoming events in this category.</p>
+        {filteredEvents.length === 0 ? (
+          <p className="text-center text-gray-400 py-8">
+            No events in this category.
+          </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-16">
-            {filteredUpcoming.map((event) => (
+            {filteredEvents.map((event) => (
               <div key={event.id} className="event-card">
                 <EventCard event={event} />
               </div>
@@ -265,36 +333,6 @@ const EventsPage: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Past events toggle */}
-      <div className="text-center mb-8">
-        <button
-          onClick={() => setShowPast(!showPast)}
-          className="px-8 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-all duration-300"
-        >
-          {showPast ? "Hide" : "Show"} Past Events ({pastEvents.length})
-        </button>
-      </div>
-
-      {/* Past events */}
-      {showPast && (
-        <div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center opacity-70">
-            Past Events
-          </h2>
-          {filteredPast.length === 0 ? (
-            <p className="text-center text-gray-400 py-8">No past events in this category.</p>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-              {filteredPast.map((event) => (
-                <div key={event.id} className="event-card opacity-60 grayscale">
-                  <EventCard event={event} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
     </section>
   );
 };
