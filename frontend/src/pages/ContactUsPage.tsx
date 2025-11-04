@@ -1,3 +1,6 @@
+import { useRef, useState } from 'react';
+import emailjs from '@emailjs/browser';
+
 // Contact Info Card Props interface
 interface ContactInfoCardProps {
   icon: string;
@@ -23,12 +26,55 @@ const ContactInfoCard: React.FC<ContactInfoCardProps> = ({ icon, title, info, li
 
 // Main Contact Us Page Component
 export default function ContactUsPage() {
-  // WhatsApp number (replace with your organization's WhatsApp number in format: countrycode+phonenumber, e.g., 919876543210)
-  const WHATSAPP_NUMBER = "919999999999"; // Example: India +91 format
-  const WHATSAPP_MESSAGE = encodeURIComponent(
-    "Hi! I'd like to connect with MUJ ACM. Can you help me?"
-  );
-  const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitMessage, setSubmitMessage] = useState('');
+
+  // Initialize EmailJS with environment variables
+  const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+  const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      // Check if environment variables are set
+      if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID) {
+        throw new Error('EmailJS configuration is missing. Please add the required environment variables.');
+      }
+
+      // Initialize EmailJS
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+
+      if (!formRef.current) {
+        throw new Error('Form reference not found');
+      }
+
+      const result = await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        formRef.current
+      );
+
+      if (result.status === 200) {
+        setSubmitStatus('success');
+        setSubmitMessage('Thank you! Your message has been sent successfully. We\'ll get back to you soon!');
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      setSubmitMessage('Oops! Something went wrong. Please try again later.');
+      console.error('EmailJS Error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
   <div className="relative min-h-screen w-full font-sans text-white">
@@ -75,26 +121,92 @@ export default function ContactUsPage() {
             />
           </div>
 
-          {/* WhatsApp Chat Section */}
+          {/* Contact Form Section */}
           <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-12 shadow-2xl border border-white/20">
-            <h2 className="text-3xl font-bold mb-6 text-center text-white">Chat With Us on WhatsApp</h2>
-            <div className="text-center space-y-6">
-              <div className="text-6xl">💬</div>
-              <p className="text-lg text-gray-200 mb-4">
-                Have a question, complaint, or want to learn more about MUJ ACM? Connect with us instantly on WhatsApp!
-              </p>
-              <p className="text-sm text-gray-300 mb-6">
-                We're here to help and typically respond within a few hours.
-              </p>
-              <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out text-lg"
+            <h2 className="text-3xl font-bold mb-6 text-center text-white">Send Us a Message</h2>
+            
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Field */}
+              <div>
+                <label htmlFor="user_name" className="block text-sm font-medium text-gray-200 mb-2">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  id="user_name"
+                  name="user_name"
+                  required
+                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                  placeholder="John Doe"
+                />
+              </div>
+
+              {/* Email Field */}
+              <div>
+                <label htmlFor="user_email" className="block text-sm font-medium text-gray-200 mb-2">
+                  Your Email
+                </label>
+                <input
+                  type="email"
+                  id="user_email"
+                  name="user_email"
+                  required
+                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                  placeholder="john@example.com"
+                />
+              </div>
+
+              {/* Subject Field */}
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-200 mb-2">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  required
+                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                  placeholder="How can we help?"
+                />
+              </div>
+
+              {/* Message Field */}
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-200 mb-2">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows={5}
+                  className="w-full px-4 py-3 bg-white/10 border border-cyan-400/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 transition-colors resize-none"
+                  placeholder="Tell us what's on your mind..."
+                />
+              </div>
+
+              {/* Submit Status Messages */}
+              {submitStatus === 'success' && (
+                <div className="p-4 bg-green-500/20 border border-green-400/50 rounded-lg text-green-200">
+                  ✓ {submitMessage}
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="p-4 bg-red-500/20 border border-red-400/50 rounded-lg text-red-200">
+                  ✕ {submitMessage}
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 disabled:hover:scale-100 transition-all duration-300 ease-in-out text-lg"
               >
-                💬 Start WhatsApp Chat
-              </a>
-            </div>
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
           </div>
 
           {/* Social Media Section */}

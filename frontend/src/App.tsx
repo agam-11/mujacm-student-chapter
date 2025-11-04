@@ -9,10 +9,10 @@ import Section from "./components/Section";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import MobileMenu from "./components/MobileMenu";
 import ThemeContext from "./context/ThemeContext";
-import ThreeGlobe from "./components/ThreeGlobe";
 import TeamSection from "./pages/TeamPage";
 import GalleryPage from "./pages/GalleryPage";
 import EventsPage from "./pages/EventsPage";
+import ThreeGlobe from "./components/ThreeGlobe";
 
 interface Section {
   id: string;
