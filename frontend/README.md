@@ -15,12 +15,14 @@ The React Compiler is not enabled on this template because of its impact on dev 
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
-## Backend integration
+## Contact form / EmailJS
 
-If you run the backend locally on a different port, set the `VITE_API_BASE` environment variable in the frontend to point to it (used by the contact form):
+This frontend uses EmailJS for client-side contact form submissions. Configure the following variables in `frontend/.env` (you can copy from `.env.example`):
 
 ```
-VITE_API_BASE=http://localhost:5000
+VITE_EMAILJS_PUBLIC_KEY=your_public_key
+VITE_EMAILJS_SERVICE_ID=your_service_id
+VITE_EMAILJS_TEMPLATE_ID=your_template_id
 ```
 
-You can copy `.env.example` to `.env` in the frontend folder.
+If you prefer a server-side contact API instead, set `VITE_API_BASE` to your backend URL and update the contact form call accordingly.
