@@ -47,31 +47,34 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const cameraZTargetRef = useRef<number>(2);
   const animationIdRef = useRef<number | null>(null);
-  
+  const initialViewportWidth = useRef<number>(0);
+  const initialViewportHeight = useRef<number>(0);
+
   // Touch interaction state
   const touchStartX = useRef<number>(0);
   const touchStartY = useRef<number>(0);
-  const isTouching = useRef<boolean>(false);
+  const touchRotationVelocityX = useRef<number>(0);
+  const touchRotationVelocityY = useRef<number>(0);
 
   // Color scheme based on theme
   const getColors = (dark: boolean): Colors => dark
     ? {
-        bg: 0x110053,
-        globe: 0x1f00a9,
-        star: 0xd4d4d4,
-        ray: 0x00ffff,
-        rocketBody: 0xff6600,
-        rocketFlame: 0xffaa00,
-      }
+      bg: 0x110053,
+      globe: 0x1f00a9,
+      star: 0xd4d4d4,
+      ray: 0x00ffff,
+      rocketBody: 0xff6600,
+      rocketFlame: 0xffaa00,
+    }
     : {
-        // Light theme: pure white background, black/gray elements for high contrast
-        bg: 0xffffff,
-        globe: 0x000000,
-        star: 0x000000,
-        ray: 0x000000,
-        rocketBody: 0x000000,
-        rocketFlame: 0x000000,
-      };
+      // Light theme: pure white background, black/gray elements for high contrast
+      bg: 0xffffff,
+      globe: 0x000000,
+      star: 0x000000,
+      ray: 0x000000,
+      rocketBody: 0x000000,
+      rocketFlame: 0x000000,
+    };
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -80,17 +83,19 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
 
     const colors = getColors(isDark);
 
-  // Responsive scaling based on viewport (prefer visualViewport on mobile)
-  const vw = (window as any).visualViewport ? (window as any).visualViewport.width : window.innerWidth;
-  const vh = (window as any).visualViewport ? (window as any).visualViewport.height : window.innerHeight;
-  const isMobile = vw < 768;
-  const isTablet = vw >= 768 && vw < 1024;
+    // Responsive scaling based on viewport (use window dimensions, not visualViewport)
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    initialViewportWidth.current = vw;
+    initialViewportHeight.current = vh;
+    const isMobile = vw < 768;
+    const isTablet = vw >= 768 && vw < 1024;
 
-  const globeScale = isMobile ? 0.6 : isTablet ? 0.8 : 1.0;
-  const cameraDistance = isMobile ? 1.25 : isTablet ? 2.5 : 2;
-  // store responsive values in refs so animate/resize handlers can access them
-  const cameraDistanceRef = { current: cameraDistance } as { current: number };
-  const globeScaleRef = { current: globeScale } as { current: number };
+    const globeScale = isMobile ? 0.6 : isTablet ? 0.8 : 1.0;
+    const cameraDistance = isMobile ? 1.25 : isTablet ? 2.5 : 2;
+    // store responsive values in refs so animate/resize handlers can access them
+    const cameraDistanceRef = { current: cameraDistance } as { current: number };
+    const globeScaleRef = { current: globeScale } as { current: number };
     const starCount = isMobile ? 500 : isTablet ? 1000 : 1500;
     const rayCount = isMobile ? 75 : isTablet ? 75 : 75;
     const rocketCount = isMobile ? 1 : isTablet ? 2 : 3;
@@ -106,18 +111,26 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       0.1,
       1000
     );
+
+    // Initial FOV correction for mobile portrait to prevent zoom effect
+    if (vw < vh) {
+      const targetTanHalfHFov = 0.43; // tan(75/2) * 0.5625 (9:16 aspect)
+      camera.fov = (360 / Math.PI) * Math.atan(targetTanHalfHFov / (vw / vh));
+      camera.updateProjectionMatrix();
+    }
+
     camera.position.z = cameraDistanceRef.current;
     cameraZTargetRef.current = cameraDistanceRef.current;
     cameraRef.current = camera;
 
     // Renderer setup
-    const renderer = new THREE.WebGLRenderer({ 
+    const renderer = new THREE.WebGLRenderer({
       antialias: !isMobile, // Disable antialiasing on mobile for better performance
       alpha: true,
       powerPreference: 'high-performance', // Request high-performance GPU
       preserveDrawingBuffer: false // Better performance
     });
-  renderer.setSize(vw, vh);
+    renderer.setSize(vw, vh);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio for performance
     renderer.setClearColor(colors.bg, 1);
     renderer.domElement.style.position = 'fixed';
@@ -127,7 +140,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.zIndex = '-1';
     renderer.domElement.style.pointerEvents = 'none';
-    
+
     // Clear previous renderer if exists
     if (containerRef.current) {
       if (containerRef.current.firstChild) {
@@ -152,7 +165,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     globeRef.current = globe;
 
     // Add stars/particles
-  const starGeometry = new THREE.BufferGeometry();
+    const starGeometry = new THREE.BufferGeometry();
     const positions = new Float32Array(starCount * 3);
     const velocities = new Float32Array(starCount * 3);
 
@@ -160,7 +173,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       positions[i] = (Math.random() - 0.5) * 15;
       positions[i + 1] = (Math.random() - 0.5) * 15;
       positions[i + 2] = (Math.random() - 0.5) * 15;
-      
+
       velocities[i] = (Math.random() - 0.5) * 0.003;
       velocities[i + 1] = (Math.random() - 0.5) * 0.003;
       velocities[i + 2] = (Math.random() - 0.5) * 0.003;
@@ -185,13 +198,13 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     for (let i = 0; i < rayCount; i++) {
       const phi = Math.random() * Math.PI * 2;
       const theta = Math.random() * Math.PI;
-      
+
       const rayLength = 0.175 * globeScale;
       const globeRadius = 1.15 * globeScale;
       const startX = Math.sin(theta) * Math.cos(phi) * globeRadius;
       const startY = Math.sin(theta) * Math.sin(phi) * globeRadius;
       const startZ = Math.cos(theta) * globeRadius;
-      
+
       const endX = Math.sin(theta) * Math.cos(phi) * (globeRadius + rayLength);
       const endY = Math.sin(theta) * Math.sin(phi) * (globeRadius + rayLength);
       const endZ = Math.cos(theta) * (globeRadius + rayLength);
@@ -202,7 +215,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
         endX, endY, endZ,
       ]);
       rayGeometry.setAttribute('position', new THREE.BufferAttribute(rayPositions, 3));
-      
+
       const rayMaterial = new THREE.LineBasicMaterial({
         color: colors.ray,
         transparent: true,
@@ -211,7 +224,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       });
       const rayLine = new THREE.Line(rayGeometry, rayMaterial);
       rayGroup.add(rayLine);
-      
+
       rays.push({
         line: rayLine,
         phi,
@@ -243,7 +256,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       const velY = (Math.random() - 0.5) * 0.015;
       const velZ = (Math.random() - 0.5) * 0.015;
 
-  const rocketGroup = new THREE.Group();
+      const rocketGroup = new THREE.Group();
 
       const coneGeometry = new THREE.ConeGeometry(0.05, 0.2, 8);
       const rocketMaterial = new THREE.MeshBasicMaterial({ color: colors.rocketBody });
@@ -275,7 +288,7 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     for (let i = 0; i < rocketCount; i++) {
       createRocket();
     }
-  rocketsRef.current = { rockets, createRocket, scene };
+    rocketsRef.current = { rockets, createRocket, scene };
 
     // Mouse move event
     const handleMouseMove = (event: MouseEvent) => {
@@ -286,72 +299,84 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Touch event handlers for mobile interactivity - use window for better performance
+    // Touch event handlers for mobile - rotate the globe, not the camera
     const handleTouchStart = (event: TouchEvent) => {
       if (event.touches.length === 1) {
-        isTouching.current = true;
         touchStartX.current = event.touches[0].clientX;
         touchStartY.current = event.touches[0].clientY;
+        touchRotationVelocityX.current = 0;
+        touchRotationVelocityY.current = 0;
       }
     };
 
     const handleTouchMove = (event: TouchEvent) => {
-      if (event.touches.length === 1 && isTouching.current) {
+      if (event.touches.length === 1) {
         const touch = event.touches[0];
-        
-        // Use requestAnimationFrame to throttle updates and prevent lag
-        requestAnimationFrame(() => {
-          // Update mouse position for camera parallax (moving the whole scene view)
-          mouseX.current = (touch.clientX / window.innerWidth) * 2 - 1;
-          mouseY.current = -(touch.clientY / window.innerHeight) * 2 + 1;
-        });
-        
-        // Update touch position for next move
+        const deltaX = touch.clientX - touchStartX.current;
+        const deltaY = touch.clientY - touchStartY.current;
+
+        // Convert touch delta to rotation velocity (reduced sensitivity)
+        touchRotationVelocityY.current = deltaX * 0.0005;
+        touchRotationVelocityX.current = -deltaY * 0.0005;
+
         touchStartX.current = touch.clientX;
         touchStartY.current = touch.clientY;
       }
     };
 
     const handleTouchEnd = () => {
-      isTouching.current = false;
+      // Apply some damping but keep the rotation going
+      touchRotationVelocityX.current *= 0.95;
+      touchRotationVelocityY.current *= 0.95;
     };
 
-    // Add touch event listeners only to window for better performance
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
-    // Handle window / visualViewport resize: update renderer size, globe scale, and camera distance consistently
+    // Handle window resize: only react to actual window resizes, not address bar changes
     const handleResize = () => {
-      const newVw = (window as any).visualViewport ? (window as any).visualViewport.width : window.innerWidth;
-      const newVh = (window as any).visualViewport ? (window as any).visualViewport.height : window.innerHeight;
+      const newVw = window.innerWidth;
+      const newVh = window.innerHeight;
+
+      const widthChanged = Math.abs(newVw - initialViewportWidth.current) > 10;
+
+      if (widthChanged) {
+        initialViewportWidth.current = newVw;
+
+        // Fix for mobile address bar resize "zoom" effect
+        // Maintain horizontal FOV on portrait/mobile screens
+        if (newVw < newVh) {
+          const targetTanHalfHFov = 0.43;
+          camera.fov = (360 / Math.PI) * Math.atan(targetTanHalfHFov / (newVw / newVh));
+        } else {
+          camera.fov = 75;
+        }
+
+        // Recompute responsive values consistently
+        const newIsMobile = newVw < 768;
+        const newIsTablet = newVw >= 768 && newVw < 1024;
+
+        // Update globe scale
+        globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
+        if (globeRef.current) {
+          globeRef.current.scale.setScalar(globeScaleRef.current);
+        }
+
+        // Update camera distance to match scale
+        const newCameraDistance = newIsMobile ? 1.25 : newIsTablet ? 2.5 : 2;
+        cameraDistanceRef.current = newCameraDistance;
+        cameraZTargetRef.current = newCameraDistance;
+        camera.position.z = newCameraDistance;
+      }
+
+      initialViewportHeight.current = newVh;
 
       camera.aspect = newVw / newVh;
       camera.updateProjectionMatrix();
       renderer.setSize(newVw, newVh);
-
-      // Recompute responsive values consistently
-      const newIsMobile = newVw < 768;
-      const newIsTablet = newVw >= 768 && newVw < 1024;
-      
-      // Update globe scale
-      globeScaleRef.current = newIsMobile ? 0.6 : newIsTablet ? 0.8 : 1.0;
-      if (globeRef.current) {
-        globeRef.current.scale.setScalar(globeScaleRef.current);
-      }
-      
-      // Update camera distance to match scale (important for mobile!)
-      const newCameraDistance = newIsMobile ? 1.25 : newIsTablet ? 2.5 : 2;
-      cameraDistanceRef.current = newCameraDistance;
-      cameraZTargetRef.current = newCameraDistance;
-      // Smoothly move camera to new distance
-      camera.position.z = newCameraDistance;
     };
     window.addEventListener('resize', handleResize);
-    if ((window as any).visualViewport) {
-      (window as any).visualViewport.addEventListener('resize', handleResize);
-      (window as any).visualViewport.addEventListener('scroll', handleResize);
-    }
 
     // Animation loop
     let frameCount = 0;
@@ -359,19 +384,31 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       animationIdRef.current = requestAnimationFrame(animate);
       frameCount++;
 
-      // Rotate globe (base rotation only, no touch velocity)
+      // Rotate globe (base rotation + touch velocity on mobile)
       if (globeRef.current) {
-        globeRef.current.rotation.y += 0.0002;
-        globeRef.current.rotation.x += 0.0001;
+        globeRef.current.rotation.y += 0.0002 + touchRotationVelocityY.current;
+        globeRef.current.rotation.x += 0.0001 + touchRotationVelocityX.current;
+
+        // Apply stronger damping to touch velocity for less sensitivity
+        touchRotationVelocityX.current *= 0.85;
+        touchRotationVelocityY.current *= 0.85;
       }
 
-  // Adjust camera position based on mouse
-  camera.position.x = mouseX.current * 0.3;
-  camera.position.y = mouseY.current * 0.3;
-  // Smoothly interpolate camera z towards the target to avoid sudden jumps
-  const targetZ = cameraZTargetRef.current;
-  camera.position.z += (targetZ - camera.position.z) * 0.08;
-  camera.lookAt(0, 0, 0);
+      // Adjust camera position based on mouse (disable parallax on mobile)
+      if (window.innerWidth >= 768) {
+        camera.position.x = mouseX.current * 0.3;
+        camera.position.y = mouseY.current * 0.3;
+        // Smoothly interpolate camera z towards the target
+        const targetZ = cameraZTargetRef.current;
+        camera.position.z += (targetZ - camera.position.z) * 0.08;
+      } else {
+        // Lock camera position completely on mobile
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = cameraZTargetRef.current;
+      }
+
+      camera.lookAt(0, 0, 0);
 
       // Update stars
       if (starsRef.current) {
@@ -415,8 +452,8 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
 
           if (rocket.lifetime > rocket.maxLifetime || Math.abs(rocket.x) > 25 || Math.abs(rocket.y) > 25 || Math.abs(rocket.z) > 25) {
             scene.remove(rocket.mesh);
-            try { (rocket.mesh as any).geometry?.dispose(); } catch {}
-            try { (rocket.mesh as any).material?.dispose(); } catch {}
+            try { (rocket.mesh as any).geometry?.dispose(); } catch { }
+            try { (rocket.mesh as any).material?.dispose(); } catch { }
             rockets.splice(index, 1);
             createRocket();
           }
@@ -447,8 +484,8 @@ export default function ThreeGlobe({ isDark = true }: { isDark?: boolean }) {
       if (containerRef.current && renderer.domElement.parentNode === containerRef.current) {
         containerRef.current.removeChild(renderer.domElement);
       }
-      try { geometry.dispose(); } catch {}
-      try { (material as any).dispose(); } catch {}
+      try { geometry.dispose(); } catch { }
+      try { (material as any).dispose(); } catch { }
     };
   }, [isDark]);
 

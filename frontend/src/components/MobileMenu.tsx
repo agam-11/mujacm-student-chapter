@@ -1,5 +1,5 @@
 import { useContext, useState, ReactNode } from 'react';
-import { Link } from 'react-scroll';
+import { scroller } from 'react-scroll';
 import ThemeContext from '../context/ThemeContext';
 
 interface Section {
@@ -17,7 +17,21 @@ export default function MobileMenu({ sections }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
-  const closeMenu = () => setIsOpen(false);
+  const closeMenu = () => {
+    // Delay closing to allow scroll animation to start
+    setTimeout(() => setIsOpen(false), 100);
+  };
+
+  const handleLinkClick = (id: string) => {
+    // Explicitly scroll using the global scroller
+    scroller.scrollTo(id, {
+      duration: 500,
+      smooth: true,
+      offset: -90,
+    });
+    // Close menu with a delay to ensure scroll animation starts
+    setTimeout(() => setIsOpen(false), 300);
+  };
 
   return (
     <div className="md:hidden">
@@ -32,21 +46,18 @@ export default function MobileMenu({ sections }: MobileMenuProps) {
         aria-label="Toggle menu"
       >
         <span
-          className={`block w-6 h-0.5 mb-1 transition-all duration-300 ${
-            isOpen ? 'rotate-45 translate-y-1.5' : ''
-          }`}
+          className={`block w-6 h-0.5 mb-1 transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-1.5' : ''
+            }`}
           style={{ backgroundColor: theme.colors.text }}
         />
         <span
-          className={`block w-6 h-0.5 mb-1 transition-all duration-300 ${
-            isOpen ? 'opacity-0' : 'opacity-100'
-          }`}
+          className={`block w-6 h-0.5 mb-1 transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'
+            }`}
           style={{ backgroundColor: theme.colors.text }}
         />
         <span
-          className={`block w-6 h-0.5 transition-all duration-300 ${
-            isOpen ? '-rotate-45 -translate-y-1.5' : ''
-          }`}
+          className={`block w-6 h-0.5 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-1.5' : ''
+            }`}
           style={{ backgroundColor: theme.colors.text }}
         />
       </button>
@@ -62,9 +73,8 @@ export default function MobileMenu({ sections }: MobileMenuProps) {
 
       {/* Mobile Menu Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-64 z-50 transform transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed top-0 right-0 h-full w-64 z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
         style={{
           backgroundColor: theme.colors.bgSecondary,
           boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.3)',
@@ -103,22 +113,20 @@ export default function MobileMenu({ sections }: MobileMenuProps) {
             {sections.map(({ id, label, component }: Section) => (
               <li key={id}>
                 {component ? (
-                  <Link
-                    to={id}
-                    spy={true}
-                    smooth={true}
-                    offset={-90}
-                    duration={500}
-                    onClick={closeMenu}
+                  <a
+                    href={`#${id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick(id);
+                    }}
                     className="block font-bold uppercase tracking-wider text-sm py-3 px-4 rounded-lg cursor-pointer transition-all duration-300"
-                    activeClass="nav-link-active"
                     style={{
                       color: theme.colors.text,
                       backgroundColor: 'transparent',
                     }}
                   >
                     {label}
-                  </Link>
+                  </a>
                 ) : (
                   <span
                     className="block font-bold uppercase tracking-wider text-sm py-3 px-4 rounded-lg cursor-not-allowed opacity-50"

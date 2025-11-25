@@ -14,14 +14,11 @@ type Member = {
 const teamMembers: Member[] = [
   { name: "Agam \n Bhasin", role: "Chairperson", img: "/agambhasin.png" },
   { name: "Prakhar S.", role: "Vice-chairperson", img: "/prakhar.png" },
+  {name: "Varun Narayan Jain",role: "Technical Secretary",img: "/varun.png",},
   { name: "Rohit Nalawade", role: "Treasurer", img: "/rohit.png" },
   { name: "Sukrit Sinha", role: "Secretary", img: "/sukrit.png" },
   { name: "Naman Verma", role: "Creative Director", img: "/naman.png" },
-  {
-    name: "Varun Narayan Jain",
-    role: "Technical Secretary",
-    img: "/varun.png",
-  },
+  
 ];
 
 const TeamSection = () => {
@@ -77,13 +74,9 @@ const TeamSection = () => {
               <ProfileCard
                 name={member.name}
                 title={member.role}
-                handle={member.name.split(" ")[0].toLowerCase()}
-                status="Online"
-                contactText="Contact Me"
                 avatarUrl={member.img}
                 enableTilt={true}
                 enableMobileTilt={false}
-                onContactClick={() => console.log(`Contact ${member.name}`)}
               />
             </div>
           ))}

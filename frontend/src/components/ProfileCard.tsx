@@ -4,11 +4,8 @@ import ThemeContext from '../context/ThemeContext';
 type Props = {
   name: string;
   title?: string;
-  handle?: string;
-  status?: string;
   contactText?: string;
   avatarUrl?: string;
-  showUserInfo?: boolean;
   enableTilt?: boolean;
   enableMobileTilt?: boolean;
   onContactClick?: () => void;
@@ -30,14 +27,9 @@ const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
 export default function ProfileCard({
   name,
   title,
-  handle,
-  status,
-  contactText = 'Contact Me',
   avatarUrl,
-  showUserInfo = true,
   enableTilt = true,
   enableMobileTilt = false,
-  onContactClick,
 }: Props) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -162,7 +154,7 @@ export default function ProfileCard({
   return (
     <div
       ref={cardRef}
-      className="profile-card-3d relative w-full h-full max-w-[360px] sm:max-w-none min-h-[360px] sm:min-h-[460px] md:min-h-[520px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mx-auto"
+      className="profile-card-3d relative w-full h-full max-w-[360px] sm:max-w-none min-h-[300px] sm:min-h-[400px] md:min-h-[460px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mx-auto"
       style={{
         background: theme?.isDark
           ? 'linear-gradient(135deg, #0b1020 0%, #111427 50%, #1a0a2e 100%)'
@@ -209,65 +201,13 @@ export default function ProfileCard({
             src={avatarUrl}
             alt={name}
             loading="lazy"
-            className="object-contain max-h-[220px] sm:max-h-[320px] w-auto"
+            className="object-contain max-h-[220px] sm:max-h-[320px] w-auto scale-125 translate-y-10"
             style={{
               filter: theme?.isDark ? 'drop-shadow(0 0 28px rgba(6, 182, 212, 0.45))' : 'drop-shadow(0 0 20px rgba(0, 102, 204, 0.2))',
             }}
           />
         </div>
 
-        {/* Bottom: Glass bar with info and button */}
-        {showUserInfo && (
-        <div
-          className="w-full rounded-xl md:rounded-2xl px-3 py-2 md:px-5 md:py-4 flex items-center justify-between gap-3"
-          style={{
-            background: theme?.isDark
-              ? 'linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))'
-              : 'linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7))',
-            backdropFilter: 'blur(12px)',
-            border: `1px solid ${theme?.isDark ? 'rgba(6, 182, 212, 0.2)' : 'rgba(0, 102, 204, 0.15)'}`,
-            boxShadow: theme?.isDark
-              ? '0 8px 32px rgba(6, 182, 212, 0.1)'
-              : '0 8px 32px rgba(0, 102, 204, 0.08)',
-          }}
-        >
-          <div className="flex items-center gap-2 min-w-0">
-            <img
-              src={avatarUrl}
-              alt={name}
-              loading="lazy"
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover flex-shrink-0 border-2"
-              style={{ borderColor: theme?.colors?.accent }}
-            />
-            <div className="min-w-0">
-              {handle && (
-                <div className="text-xs md:text-sm font-bold truncate" style={{ color: theme?.colors?.text }}>
-                  @{handle}
-                </div>
-              )}
-              {status && (
-                <div className="text-xs" style={{ color: theme?.colors?.textSecondary }}>
-                  {status}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <button
-            onClick={onContactClick}
-            className="px-3 md:px-5 py-2 rounded-lg font-bold text-xs md:text-sm transition-all hover:scale-105 active:scale-95 flex-shrink-0"
-            style={{
-              background: theme?.colors?.accent,
-              color: theme?.isDark ? '#000' : '#fff',
-              border: `1px solid ${theme?.colors?.accent}`,
-              boxShadow: `0 4px 15px ${theme?.isDark ? 'rgba(6, 182, 212, 0.4)' : 'rgba(0, 102, 204, 0.3)'}`,
-            }}
-            aria-label={`Contact ${name}`}
-          >
-            {contactText}
-          </button>
-        </div>
-        )}
       </div>
     </div>
   );

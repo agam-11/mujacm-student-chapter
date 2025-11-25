@@ -86,9 +86,15 @@ const ResponsiveBreathingGrid: React.FC = () => {
                 data-src={src}
                 src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
                 alt={`Gallery image ${i + 1}`}
-                className="object-cover w-full h-full select-none pointer-events-auto"
+                className="object-cover w-full h-full select-none pointer-events-auto opacity-0 transition-opacity duration-700 ease-in-out"
                 draggable={false}
-                loading="lazy"
+                decoding="async"
+                onLoad={(e) => {
+                  const el = e.currentTarget as HTMLImageElement;
+                  if (el.src !== "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==") {
+                    el.classList.remove('opacity-0');
+                  }
+                }}
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
                   el.style.display = "none";

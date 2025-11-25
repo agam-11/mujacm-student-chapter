@@ -141,9 +141,17 @@ body {
 
 /* Floating animation used for prominent logos */
 @keyframes float-slow {
-	0% { transform: translateY(0px); }
-	50% { transform: translateY(-18px); }
-	100% { transform: translateY(0px); }
+	0% {
+		transform: translateY(0px);
+	}
+
+	50% {
+		transform: translateY(-18px);
+	}
+
+	100% {
+		transform: translateY(0px);
+	}
 }
 
 .animate-float-slow {
@@ -163,10 +171,10 @@ body {
 
 /* Apply the frosted-glass appearance only when the light theme is active */
 .light-theme .glass-light {
-	background: rgba(255,255,255,0.06);
+	background: rgba(255, 255, 255, 0.06);
 	backdrop-filter: blur(10px);
 	-webkit-backdrop-filter: blur(10px);
-	border: 1px solid rgba(0,0,0,0.06);
+	border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 /* Ensure text inside glass panels is readable in each theme */
@@ -174,14 +182,28 @@ body {
 .light-theme .glass-light p,
 .light-theme .glass-light h2,
 .light-theme .glass-light h3 {
-	color: #0f172a !important; /* slate-900 / dark text */
+	color: #0f172a !important;
+	/* slate-900 / dark text */
 }
 
 .dark-theme .glass-light,
 .dark-theme .glass-light p,
 .dark-theme .glass-light h2,
 .dark-theme .glass-light h3 {
-	color: #d4d4d4 !important; /* light text for dark mode */
+	color: #d4d4d4 !important;
+	/* light text for dark mode */
 }
 
 
+
+/* Event Card Animation */
+.event-card {
+	opacity: 1;
+	transform: translateY(0);
+	transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.event-card.is-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
