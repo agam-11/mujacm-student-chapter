@@ -105,14 +105,14 @@ export default function ContactUsPage() {
             <ContactInfoCard
               icon="📧"
               title="Email Us"
-              info="acm@muj.manipal.edu"
-              link="mailto:acm@muj.manipal.edu"
+              info="acmmuj@gmail.com"
+              link="mailto:acmmuj@gmail.com"
             />
             <ContactInfoCard
               icon="📱"
               title="Follow Us"
-              info="@mujacm"
-              link="https://instagram.com/mujacm"
+              info="@muj_acm"
+              link="https://instagram.com/muj_acm"
             />
             <ContactInfoCard
               icon="📍"

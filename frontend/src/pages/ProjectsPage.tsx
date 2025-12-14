@@ -162,23 +162,6 @@ export default function ProjectsPage() {
               <p className="text-xl text-gray-300">No projects found in this category.</p>
             </div>
           )}
-
-          {/* Call to Action */}
-          <div className="mt-16 text-center bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-white/20">
-            <h2 className="text-3xl font-bold mb-4">Want to Contribute?</h2>
-            <div className="max-w-2xl mx-auto">
-              <div className="glass-light mx-auto mb-6">
-                <p className="text-lg text-gray-800">
-                  We're always looking for passionate students to join our projects
-                  or start new ones. Share your ideas and collaborate with fellow
-                  members!
-                </p>
-              </div>
-            </div>
-            <button className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out">
-              Submit Your Project
-            </button>
-          </div>
         </div>
       </section>
     </div>

@@ -14,7 +14,7 @@ interface Event {
   isPast?: boolean;
 }
 
-export const events: Event[] = [
+const events: Event[] = [
   {
     id: "1",
     title: "Research Paper Talk",
@@ -197,48 +197,54 @@ const categoryColors: Record<Event["category"], string> = {
 };
 
 // Event card component
-const EventCard: React.FC<{ event: Event }> = ({ event }) => (
-  <div className="group relative rounded-2xl shadow-lg border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-4 flex flex-col hover:border-cyan-400/50 transition-all duration-300 hover:shadow-cyan-500/20 hover:shadow-xl min-h-[200px]">
-    {/* Category badge */}
-    <div className="absolute top-4 right-4">
-      <span className={`text-xs font-bold px-3 py-1 rounded-full border ${categoryColors[event.category]}`}>
-        {event.category}
-      </span>
-    </div>
+const EventCard: React.FC<{ event: Event }> = ({ event }) => {
+  const theme = useContext(ThemeContext);
 
-    {/* Title */}
-    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 pr-24">
-      {event.title}
-    </h3>
-
-    {/* Date & Time */}
-    <div className="flex items-center gap-2 text-cyan-300 text-sm mb-1">
-      <span>📅</span>
-      <span>{event.date}</span>
-    </div>
-
-    {/* Time */}
-    {event.time && (
-      <div className="flex items-center gap-2 text-cyan-300 text-sm mb-1">
-        <span>🕐</span>
-        <span>{event.time}</span>
+  return (
+    <div
+      className="group relative rounded-xl shadow-md px-4 py-5 transition-all duration-300 hover:shadow-xl"
+      style={{
+        border: theme?.isDark ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.15)',
+        backgroundColor: theme?.isDark ? 'rgba(30, 30, 50, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+        minHeight: '180px'
+      }}
+    >
+      {/* Category badge */}
+      <div className="absolute top-3 right-3">
+        <span
+          className={`text-[10px] md:text-xs font-bold px-2 py-0.5 md:px-3 md:py-1 rounded-full border ${categoryColors[event.category]}`}
+        >
+          {event.category}
+        </span>
       </div>
-    )}
 
-    {/* Location */}
-    {event.location && (
-      <div className="flex items-center gap-2 text-cyan-300 text-sm mb-4">
-        <span>📍</span>
-        <span>{event.location}</span>
+      {/* Title */}
+      <h3
+        className="text-lg md:text-xl font-bold mb-2 pr-16"
+        style={{ color: theme?.colors?.text }}
+      >
+        {event.title}
+      </h3>
+
+      {/* Date */}
+      <div
+        className="flex items-center gap-2 text-sm mb-3"
+        style={{ color: theme?.colors?.accent }}
+      >
+        <span>📅</span>
+        <span>{event.date}</span>
       </div>
-    )}
-    {/* Description */}
-    <p className="text-gray-200 text-sm flex-grow mb-4">
-      {event.desc}
-    </p>
 
-  </div>
-);
+      {/* Description */}
+      <p
+        className="text-sm line-clamp-3"
+        style={{ color: theme?.colors?.textSecondary }}
+      >
+        {event.desc}
+      </p>
+    </div>
+  );
+};
 
 const EventsPage: React.FC = () => {
   const [filter, setFilter] = useState<Event["category"] | "all">("all");
@@ -247,6 +253,8 @@ const EventsPage: React.FC = () => {
     filter === "all"
       ? events
       : events.filter((ev) => ev.category === filter);
+
+  console.log("EventsPage rendering, filteredEvents:", filteredEvents.length);
 
   const categories: Event["category"][] = [
     "Workshop",
@@ -294,11 +302,10 @@ const EventsPage: React.FC = () => {
       <div className="flex flex-wrap justify-center gap-3 mb-12">
         <button
           onClick={() => setFilter("all")}
-          className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
-            filter === "all"
-              ? "bg-cyan-500 text-white shadow-lg"
-              : "bg-white/10 text-white hover:bg-white/20"
-          }`}
+          className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${filter === "all"
+            ? "bg-cyan-500 text-white shadow-lg"
+            : "bg-white/10 text-white hover:bg-white/20"
+            }`}
         >
           All Events
         </button>
@@ -306,11 +313,10 @@ const EventsPage: React.FC = () => {
           <button
             key={cat}
             onClick={() => setFilter(cat)}
-            className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
-              filter === cat
-                ? "bg-cyan-500 text-white shadow-lg"
-                : "bg-white/10 text-white hover:bg-white/20"
-            }`}
+            className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${filter === cat
+              ? "bg-cyan-500 text-white shadow-lg"
+              : "bg-white/10 text-white hover:bg-white/20"
+              }`}
           >
             {cat}
           </button>
